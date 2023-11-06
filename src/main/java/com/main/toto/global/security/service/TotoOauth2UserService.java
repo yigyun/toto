@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -84,16 +85,31 @@ public class TotoOauth2UserService extends DefaultOAuth2UserService {
 
     private String getKakaoEmail(Map<String, Object> attributes){
         log.info("Kakao------------------");
-        return ((Map<String,Object>)attributes.get("kakao_account")).get("email").toString();
+        Object value = attributes.get("kakao_account");
+
+        LinkedHashMap accountMap = (LinkedHashMap) value;
+
+        String email = (String) accountMap.get("email");
+        log.info("email..." + email);
+        return email;
     }
 
     private String getNaverEmail(Map<String, Object> attributes){
         log.info("Naver------------------");
-        return ((Map<String,Object>)attributes.get("response")).get("email").toString();
+
+        Object value = attributes.get("response");
+
+        LinkedHashMap accountMap = (LinkedHashMap) value;
+
+        String email = (String) accountMap.get("email");
+        log.info("email..." + email);
+
+        return email;
     }
 
     private String getGoogleEmail(Map<String, Object> attributes){
         log.info("Google------------------");
-        return attributes.get("email").toString();
+        String email = attributes.get("email").toString();
+        return email;
     }
 }

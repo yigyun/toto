@@ -22,13 +22,14 @@ public class MemberController {
 
 
     @GetMapping("/login")
-    public void loginGET(String error, String logout){
+    public String loginGET(String error, String logout){
         log.info("error: " + error);
         log.info("logout: " + logout);
 
         if(logout != null){
             log.info("user logout............");
         }
+        return "toto/member/login";
     }
 
     @GetMapping("/join")

@@ -28,8 +28,10 @@ public class TotoUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
+        log.info("UserDetailsService loadUserByUsername: " + username);
         Optional<Member> result = memberRepository.getWithRoles(username);
 
+        log.info("이 문장이 안나오면 getWithRoles 문제");
         if(result.isEmpty()){
             throw new UsernameNotFoundException("username NOT EXIST");
         }

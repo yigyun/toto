@@ -10,6 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 @Log4j2
 @RequiredArgsConstructor
@@ -20,17 +22,24 @@ public class MemberServiceImpl implements MemberService{
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public void join(MemberJoinDTO memberJoinDTO) throws MidExistException {
+
 
         String mid = memberJoinDTO.getMid();
 
-        if(memberRepository.existsById(mid)){
+        boolean exist = memberRepository.existsById(mid);
+
+        if(exist){
             throw new MidExistException();
         }
 
         Member member = modelMapper.map(memberJoinDTO, Member.class);
         member.changePassword(passwordEncoder.encode(member.getMpassword()));
         member.addRole(MemberRole.USER);
+
+        log.info("====================================");
+        log.info(member);
 
         memberRepository.save(member);
     }

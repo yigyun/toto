@@ -34,7 +34,6 @@ public class MemberSecurityDTO extends User implements OAuth2User {
         this.social = social;
     }
 
-    @Override
     public Map<String, Object> getAttributes() {
         return this.getProps();
     }

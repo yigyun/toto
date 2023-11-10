@@ -1,5 +1,6 @@
 package com.main.toto.global.security.config;
 
+import com.main.toto.global.security.handler.Custom403Handler;
 import com.main.toto.global.security.handler.TotoSocialLoginSuccessHandler;
 import com.main.toto.global.security.service.TotoUserDetailService;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +14,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.sql.DataSource;
 
@@ -27,7 +30,7 @@ import javax.sql.DataSource;
 @Log4j2
 @Configuration
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final DataSource dataSource;
@@ -36,15 +39,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterchain(HttpSecurity http) throws Exception{
 
-        http.formLogin().loginPage("/toto/member/login");
-
         http.csrf().disable();
+        http.formLogin((form) -> form.loginPage("/toto/member/login")
+                .permitAll());
+
+        http.authorizeRequests((request) -> request
+                .anyRequest().permitAll()
+        );
 
         http.rememberMe()
                 .key("sB2?f*.BDGC003GT2")
                 .tokenRepository(persistentTokenRepository())
                 .userDetailsService(userDetailsService)
                 .tokenValiditySeconds(60 * 60 * 24 * 7); // 7일
+
+        http.exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler());
 
         http.oauth2Login()
                 .loginPage("/toto/member/login")
@@ -70,6 +80,11 @@ public class SecurityConfig {
         JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
         repo.setDataSource(dataSource);
         return repo;
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler(){
+        return new Custom403Handler();
     }
 
     @Bean

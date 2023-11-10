@@ -5,7 +5,11 @@ import com.main.toto.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -33,12 +37,15 @@ public class MemberController {
     }
 
     @GetMapping("/join")
-    public void joinGET(){
+    public String joinGET(){
         log.info("join get............");
+        return "toto/member/join";
     }
 
+    // 링크 문제임 와서 고칠것.
+
     @PostMapping("/join")
-    public String joinPOST(@Valid MemberJoinDTO memberJoinDTO, RedirectAttributes redirectAttributes){
+    public String joinPOST(MemberJoinDTO memberJoinDTO, RedirectAttributes redirectAttributes){
         log.info("join post............");
         log.info(memberJoinDTO);
 
@@ -51,11 +58,12 @@ public class MemberController {
 
         redirectAttributes.addFlashAttribute("result", "success");
 
-        return "redirect:/toto/member/main";
+        return "redirect:/toto/member/login";
     }
 
     @GetMapping("/main")
-    public void mainGET(){
+    public String mainGET(){
         log.info("main get............");
+        return "Main이다 임마";
     }
 }

@@ -16,6 +16,7 @@ import java.util.Set;
 public class Member extends BaseEntity {
 
         @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         private String mid;
 
         private String mpassword;

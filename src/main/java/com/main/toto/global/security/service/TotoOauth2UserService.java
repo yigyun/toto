@@ -40,7 +40,7 @@ public class TotoOauth2UserService extends DefaultOAuth2UserService {
             case "kakao":
                 email = getKakaoEmail(attributes);
                 break;
-            case "naver":
+            case "Naver":
                 email = getNaverEmail(attributes);
                 break;
             case "google":
@@ -65,19 +65,23 @@ public class TotoOauth2UserService extends DefaultOAuth2UserService {
             newMember.addRole(MemberRole.USER);
             memberRepository.save(newMember);
 
+            log.info("email 여기 확인: " + email);
+
             MemberSecurityDTO memberSecurityDTO = new MemberSecurityDTO(email, "1111", email,
                     false, true, Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+            log.info("여기까지는 되는지 확인");
 
             memberSecurityDTO.setProps(attributes);
 
             return memberSecurityDTO;
         } else {
             Member member = join.get();
-            MemberSecurityDTO memberSecurityDTO = new MemberSecurityDTO(member.getMid(), member.getMpassword(), member.getEmail(),
-                    member.isDel(), member.isSocial(),
-                    member.getRoleSet().stream().map(
-                            memberRole -> new SimpleGrantedAuthority("ROLE_" + memberRole.name())
-                    ).collect(Collectors.toList()));
+            MemberSecurityDTO memberSecurityDTO =
+                    new MemberSecurityDTO(member.getMid(), member.getMpassword(), member.getEmail(),
+                        member.isDel(), member.isSocial(),
+                        member.getRoleSet().stream().map(
+                                memberRole -> new SimpleGrantedAuthority("ROLE_" + memberRole.name())
+                        ).collect(Collectors.toList()));
 
             return memberSecurityDTO;
         }
@@ -98,6 +102,8 @@ public class TotoOauth2UserService extends DefaultOAuth2UserService {
         log.info("Naver------------------");
 
         Object value = attributes.get("response");
+
+        log.info("네이버 value값 확인: " + value);
 
         LinkedHashMap accountMap = (LinkedHashMap) value;
 

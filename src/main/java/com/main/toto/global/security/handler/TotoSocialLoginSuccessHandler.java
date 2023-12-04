@@ -36,7 +36,7 @@ public class TotoSocialLoginSuccessHandler implements AuthenticationSuccessHandl
             return;
         }else {
             log.info("Authentication success go to main");
-            response.sendRedirect("/toto/member/main");
+            response.sendRedirect("/toto/main");
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.main.toto.global.security.config;
 
 import com.main.toto.global.security.handler.Custom403Handler;
+import com.main.toto.global.security.handler.TotoLoginSuccessHandler;
 import com.main.toto.global.security.handler.TotoSocialLoginSuccessHandler;
 import com.main.toto.global.security.service.TotoUserDetailService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class SecurityConfig {
 
         http.csrf().disable();
         http.formLogin((form) -> form.loginPage("/toto/member/login")
+                .successHandler(authenticationSuccessHandlerForm())
                 .permitAll());
 
         http.authorizeRequests((request) -> request
@@ -95,5 +97,10 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler(){
         return new TotoSocialLoginSuccessHandler(passwordEncoder());
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandlerForm(){
+        return new TotoLoginSuccessHandler();
     }
 }

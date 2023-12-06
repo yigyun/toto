@@ -13,10 +13,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/toto/main")
 public class AuctionController {
 
-    @GetMapping
-    public String mainGET(){
-        log.info("main get............");
-        return "toto/auction/main";
-    }
-
 }

@@ -45,6 +45,11 @@ public class SecurityConfig {
                 .successHandler(authenticationSuccessHandlerForm())
                 .permitAll());
 
+        http.logout((logout) -> logout.logoutUrl("/toto/member/logout")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID", "remember-me")
+                .logoutSuccessUrl("/toto/main"));
+
         http.authorizeRequests((request) -> request
                 .anyRequest().permitAll()
         );

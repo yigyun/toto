@@ -2,7 +2,7 @@ package com.main.toto.service;
 
 import com.main.toto.domain.member.Member;
 import com.main.toto.domain.member.MemberRole;
-import com.main.toto.dto.MemberJoinDTO;
+import com.main.toto.dto.member.MemberJoinDTO;
 import com.main.toto.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -42,5 +42,13 @@ public class MemberServiceImpl implements MemberService{
         log.info(member);
 
         memberRepository.save(member);
+    }
+
+    @Override
+    @Transactional
+    public void changePw(String mpassword, String mid) {
+        log.info("changePw............");
+        memberRepository.updatePassword(mpassword, mid);
+
     }
 }

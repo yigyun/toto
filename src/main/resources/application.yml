@@ -42,6 +42,12 @@ logging:
   level:
     org.springframework: info
     org.com: debug
+    org.hibernate.SQL: debug
     org:
       springframework:
         security: trace
+
+com:
+  main:
+    upload:
+      path: C:\\upload

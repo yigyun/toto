@@ -77,21 +77,25 @@
     <div class="row g-5">
       <div class="col-md-3 col-lg-3"></div>
       <div class="col-md-6 col-lg-6">
-        <form id="registerForm" action="/toto/member/join" method="post">
+        <form id="registerForm" action="/toto/member/join" method="post" th:object="${member}">
+
           <div class="row g-3">
             <div class="col-md-6">
               <label for="email" class="form-label">이메일</label>
-              <input type="text" class="form-control" id="email" name="email" placeholder="">
+              <input type="text" class="form-control" th:field="*{email}" id="email" name="email" placeholder="">
+              <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">ERROR</p>
             </div>
 
             <div class="col-md-6">
               <label for="mid" class="form-label">아이디</label>
-              <input type="text" class="form-control" name="mid" id="mid" placeholder="">
+              <input type="text" class="form-control" th:field="*{mid}" name="mid" id="mid" placeholder="">
+              <p th:if="${#fields.hasErrors('mid')}" th:errors="*{mid}">ERROR</p>
             </div>
 
             <div class="col-md-6">
               <label for="mpassword" class="form-label">비밀번호</label>
-                <input type="password" class="form-control" name="mpassword" id="mpassword" placeholder="">
+                <input type="password" class="form-control" th:field="*{mpassword}" name="mpassword" id="mpassword" placeholder="">
+              <p th:if="${#fields.hasErrors('mpassword')}" th:errors="*{mpassword}">ERROR</p>
             </div>
 
 <!--            <div class="col-md-6">-->

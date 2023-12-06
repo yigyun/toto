@@ -1,14 +1,21 @@
 package com.main.toto.controller;
 
-import com.main.toto.dto.MemberJoinDTO;
+import com.main.toto.dto.member.MemberJoinDTO;
+import com.main.toto.dto.member.MemberPwModifyDTO;
 import com.main.toto.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,17 +38,24 @@ public class MemberController {
     }
 
     @GetMapping("/join")
-    public String joinGET(){
+    public String joinGET(Model model){
         log.info("join get............");
+        model.addAttribute("member", new MemberJoinDTO());
         return "toto/member/join";
     }
 
     // 링크 문제임 와서 고칠것.
 
     @PostMapping("/join")
-    public String joinPOST(MemberJoinDTO memberJoinDTO, RedirectAttributes redirectAttributes){
+    public String joinPOST(@Validated @ModelAttribute("member") MemberJoinDTO memberJoinDTO,BindingResult bindingResult,
+                           RedirectAttributes redirectAttributes){
         log.info("join post............");
-        log.info(memberJoinDTO);
+        log.info("join 내용" + memberJoinDTO);
+
+        if(bindingResult.hasErrors()){
+            log.info("bindingResult: " + bindingResult);
+            return "toto/member/join";
+        }
 
         try{
             memberService.join(memberJoinDTO);
@@ -60,4 +74,29 @@ public class MemberController {
         log.info("main get............");
         return "Main이다 임마";
     }
+
+    @GetMapping("/modify")
+    public String pwModifyGET(Model model){
+        log.info("pwModify get............");
+        model.addAttribute("pwModify", new MemberPwModifyDTO());
+        return "toto/member/modify";
+    }
+
+    @PostMapping("/modify")
+    public String pwModifyPOST(@Validated @ModelAttribute("pwModify") MemberPwModifyDTO memberPwModifyDTO,
+                               BindingResult bindingResult, RedirectAttributes redirectAttributes
+                                , Principal principal){
+        log.info("pwModify post............");
+        if(bindingResult.hasErrors()){
+            log.info("bindingResult: " + bindingResult);
+            return "toto/member/modify";
+        }
+
+        String mid = principal.getName();
+        memberService.changePw(memberPwModifyDTO.getMpassword(), mid);
+
+        return "redirect:/toto/main";
+    }
+
+
 }

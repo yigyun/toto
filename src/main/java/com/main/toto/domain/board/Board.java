@@ -32,7 +32,7 @@ public class Board extends BaseEntity {
     private String writer;
 
     // 후에 유저랑 연관관계 맺어서 관리해야함.
-    private Long bookMarkCount;
+    private Long bookMarkCount = 1L;
 
     // 지연 로딩, cascade = CascadeType.ALL은 Board가 삭제되면 연관된 이미지도 삭제된다. 그런데 첨부파일만 삭제하는 경우를 위해 orphanRemoval = true를 추가한다.
     @OneToMany(mappedBy = "board", cascade = {CascadeType.ALL},

@@ -32,4 +32,6 @@ public class BoardDTO {
     private List<String> fileNames;
 
     private BoardCategory boardCategory;
+
+    private Long bookMarkCount;
 }

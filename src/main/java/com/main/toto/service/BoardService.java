@@ -29,13 +29,14 @@ public interface BoardService {
                 .bookMarkCount(1L)
                 .build();
 
-        if(boardDTO.getFileNames() != null){
+        if(boardDTO.getFileNames() != null) {
             boardDTO.getFileNames().forEach(fileName -> {
                 String[] arr = fileName.split("_");
                 board.addImage(arr[0], arr[1]);
             });
+        } else{
+            System.out.println("fileNames is null");
         }
-
         return board;
     }
 

@@ -1,10 +1,7 @@
 package com.main.toto.domain.board;
 
 import com.main.toto.domain.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
@@ -16,6 +13,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = "imageSet")
 public class Board extends BaseEntity {
 
     @Id

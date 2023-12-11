@@ -74,7 +74,7 @@ public class BoardController {
 
         redirectAttributes.addFlashAttribute("result" , bno);
 
-        return "redirect:/toto/main";
+        return "redirect:/toto/board/register";
     }
 
 //    @PreAuthorize("isAuthenticated()")

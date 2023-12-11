@@ -4,6 +4,7 @@ import com.main.toto.domain.board.Board;
 import com.main.toto.domain.board.BoardCategory;
 
 import com.main.toto.domain.board.BoardImage;
+import com.main.toto.dto.board.BoardDTO;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,4 +127,5 @@ class BoardRepositoryTest {
             log.info(boardImage);
         }
     }
+
 }

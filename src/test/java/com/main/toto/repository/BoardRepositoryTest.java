@@ -74,7 +74,7 @@ class BoardRepositoryTest {
         entityManager.flush();
 
         // 이제 메서드 테스트
-        Board check = boardRepository.findByBoardCategoryAndBookMarkCount(BoardCategory.FASHION).orElseThrow();
+        Board check = boardRepository.findTopByBoardCategoryOrderByBookMarkCountDesc(BoardCategory.FASHION).orElseThrow();
 
         assertEquals(check.getBoardCategory(), BoardCategory.FASHION);
         log.info("Title: " + check.getTitle());

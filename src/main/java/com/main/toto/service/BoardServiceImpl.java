@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -58,14 +59,15 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public List<BoardDTO> favoriteMain() {
-        List<BoardDTO> dtoList = null;
+        List<BoardDTO> dtoList = new ArrayList<>();
         log.info("board test in");
-        Board board1 = boardRepository.findByBoardCategoryAndBookMarkCount(BoardCategory.FASHION).orElseThrow();
-        dtoList.add(entityToDTO(board1));
+        Board board1 = boardRepository.findByBoardCategory(BoardCategory.FASHION).orElseThrow();
         log.info("board test1");
-        dtoList.add(entityToDTO(boardRepository.findByBoardCategoryAndBookMarkCount(BoardCategory.MOVIE).orElseThrow()));
+        dtoList.add(entityToDTO(board1));
+        log.info("board test1.5");
+        dtoList.add(entityToDTO(boardRepository.findByBoardCategory(BoardCategory.MOVIE).orElseThrow()));
         log.info("board test2");
-        dtoList.add(entityToDTO(boardRepository.findByBoardCategoryAndBookMarkCount(BoardCategory.MUSIC).orElseThrow()));
+        dtoList.add(entityToDTO(boardRepository.findByBoardCategory(BoardCategory.MUSIC).orElseThrow()));
         log.info("board test3");
         return dtoList;
     }

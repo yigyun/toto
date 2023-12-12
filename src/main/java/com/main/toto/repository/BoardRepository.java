@@ -15,6 +15,11 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("select b from Board b where b.bno = :bno")
     Optional<Board> findByIdWithImages(Long bno);
 
+    @EntityGraph(attributePaths = {"imageSet"})
     @Query("SELECT b FROM Board b WHERE b.boardCategory = :boardCategory AND b.bookMarkCount = (SELECT MAX(b2.bookMarkCount) FROM Board b2 WHERE b2.boardCategory = :boardCategory)")
-    Optional<Board> findByBoardCategoryAndBookMarkCount(@Param("boardCategory") BoardCategory boardCategory);
+    Optional<Board> findTopByBoardCategoryOrderByBookMarkCountDesc(@Param("boardCategory") BoardCategory boardCategory);
+
+    @EntityGraph(attributePaths = {"imageSet"})
+    @Query("SELECT b FROM Board b WHERE b.boardCategory = :boardCategory")
+    Optional<Board> findByBoardCategory(@Param("boardCategory") BoardCategory boardCategory);
 }

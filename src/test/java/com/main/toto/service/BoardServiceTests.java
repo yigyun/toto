@@ -23,6 +23,45 @@ public class BoardServiceTests {
     BoardRepository boardRepository;
 
     @Test
+    public void testRegister(){
+
+        log.info(boardService.getClass().getName());
+
+        BoardDTO boardDTO = BoardDTO.builder()
+                .title("Sample Title...")
+                .content("Sample Content...")
+                .writer("user00")
+                .bookMarkCount(1L)
+                .boardCategory(BoardCategory.FASHION)
+                .build();
+
+        log.info("boardDTO: "+boardDTO);
+
+        Long bno = boardService.register(boardDTO);
+
+        log.info("bno: "+bno);
+    }
+
+    @Test
+    public void testMain(){
+
+        log.info("board main test");
+
+        Board board = Board.builder()
+                .bookMarkCount(1L)
+                .boardCategory(BoardCategory.FASHION)
+                .bno(1L)
+                .content("test1")
+                .title("test1")
+                .writer("test1")
+                .build();
+
+        board.addImage(UUID.randomUUID().toString(), "file" + 1 + ".jpg");
+
+
+    }
+
+    @Test
     @Transactional
     public void dtoToEntityToDtoTest(){
         Board board = Board.builder()

@@ -7,6 +7,7 @@ import com.main.toto.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
@@ -60,15 +61,10 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public List<BoardDTO> favoriteMain() {
         List<BoardDTO> dtoList = new ArrayList<>();
-        log.info("board test in");
-        Board board1 = boardRepository.findByBoardCategory(BoardCategory.FASHION).orElseThrow();
-        log.info("board test1");
-        dtoList.add(entityToDTO(board1));
-        log.info("board test1.5");
-        dtoList.add(entityToDTO(boardRepository.findByBoardCategory(BoardCategory.MOVIE).orElseThrow()));
-        log.info("board test2");
-        dtoList.add(entityToDTO(boardRepository.findByBoardCategory(BoardCategory.MUSIC).orElseThrow()));
-        log.info("board test3");
+
+        for(BoardCategory boardCategory : BoardCategory.values()){
+            dtoList.add(entityToDTO(boardRepository.findTopByBoardCategoryOrderByBookMarkCountDesc(boardCategory).orElseThrow()));
+        }
         return dtoList;
     }
 }

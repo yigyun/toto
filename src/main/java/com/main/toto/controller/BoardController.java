@@ -40,7 +40,7 @@ public class BoardController {
     // 후에 카테고리 별로 1개씩 가져와서 보여주는 느낌으로 할 것
     // board service에서 3개 가져옴.
     @GetMapping("/main")
-    public String favList(Model model){
+    public String favList(PageRequestDTO  pageRequestDTO,Model model){
         // 이거 3개만 일단 가져옴.
         List<BoardDTO> dtoList = boardService.favoriteMain();
         log.info("dtoList: " + dtoList);
@@ -74,12 +74,12 @@ public class BoardController {
 
         redirectAttributes.addFlashAttribute("result" , bno);
 
-        return "redirect:/toto/board/register";
+        return "redirect:/toto/main";
     }
 
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping({"/board/modify", "/board/read"})
-    public void read(Long bno, PageRequestDTO pageRequestDTO, Model model){
+    public void read(@RequestParam Long bno,  Model model){
         log.info("bno: " + bno);
         BoardDTO boardDTO = boardService.readOne(bno);
         model.addAttribute("dto", boardDTO);
@@ -87,20 +87,18 @@ public class BoardController {
 
     @PreAuthorize("principal.username == #boardDTO.writer")
     @PostMapping("/board/modify")
-    public String modify(PageRequestDTO pageRequestDTO,
-                         @Validated BoardDTO boardDTO,
+    public String modify(@Validated BoardDTO boardDTO,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes){
         log.info("board POST modify ....." + boardDTO);
 
         if(bindingResult.hasErrors()){
             log.info("has errors.......");
-            String link = pageRequestDTO.getLink();
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
             redirectAttributes.addAttribute("bno", boardDTO.getBno());
 
 
-            return "redirect:/toto/board/modify?"+link;
+            return "redirect:/toto/board/modify?bno=" + boardDTO.getBno();
         }
 
         boardService.modify(boardDTO);
@@ -110,10 +108,10 @@ public class BoardController {
         redirectAttributes.addAttribute("bno", boardDTO.getBno());
 
 
-        return "redirect:/toto/board/read";
+        return "redirect:/toto/board/read?bno=" + boardDTO.getBno();
     }
 
-    @PreAuthorize("principal.username == #boardDTO.writer")
+//    @PreAuthorize("principal.username == #boardDTO.writer")
     @PostMapping("/board/remove")
     public String remove(BoardDTO boardDTO, RedirectAttributes redirectAttributes){
 
@@ -130,7 +128,7 @@ public class BoardController {
 
         redirectAttributes.addFlashAttribute("result", "removed");
         // 후에 이동할 곳 다시 입력
-        return "redirect:/toto/board/list";
+        return "redirect:/toto/main";
     }
 
     public void removeFiles(List<String> files) {

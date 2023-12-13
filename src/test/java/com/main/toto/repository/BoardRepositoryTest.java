@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -119,7 +120,7 @@ class BoardRepositoryTest {
         boardRepository.save(test);
         entityManager.flush();
 
-        Board board = boardRepository.findById(1L).orElseThrow();
+        Board board = boardRepository.findByIdWithImages(1L).orElseThrow();
 
         log.info(board);
         log.info("-------------");

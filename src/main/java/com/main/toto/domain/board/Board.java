@@ -67,4 +67,12 @@ public class Board extends BaseEntity {
         this.content = content;
     }
 
+    public void increaseBookMarkCount(){
+        this.bookMarkCount++;
+    }
+
+    public void decreaseBookMarkCount(){
+        this.bookMarkCount--;
+    }
+
 }

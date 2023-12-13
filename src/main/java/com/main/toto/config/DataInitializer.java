@@ -39,15 +39,15 @@ public class DataInitializer {
             for (BoardCategory category : BoardCategory.values()) {
 
                 BoardImage boardImage = BoardImage.builder()
-                        .uuid(UUID.randomUUID().toString())
-                        .fileName("file" + count + ".jpg")
+                        .uuid("o" + count)
+                        .fileName("o" + count + ".jpg")
                         .build();
 
                 BoardDTO boardDTO = BoardDTO.builder()
                         .title(category.getDescription() + " 게시글")
-                        .bno(count)
+                        .bno(count++)
                         .content(category.getDescription() + " 게시글 내용")
-                        .writer("test" + count++)
+                        .writer("test" )
                         .bookMarkCount(1L)
                         .boardCategory(category)
                         .fileNames(Arrays.asList(boardImage.getUuid() + "_" + boardImage.getFileName()))

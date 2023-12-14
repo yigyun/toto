@@ -102,12 +102,15 @@ public class FileController {
     @DeleteMapping("/remove/{fileName}")
     public Map<String, Boolean> removeFile(@PathVariable String fileName){
 
+        log.info("remove 파일: fileName = " + fileName);
         Resource resource = new FileSystemResource(uploadPath + File.separator + fileName);
 
         String resourceName = resource.getFilename();
 
         Map<String, Boolean> resultMap = new HashMap<>();
         boolean removed = false;
+
+        log.info("remove 파일: fileName = " + fileName);
 
         try{
             String contentType = Files.probeContentType(resource.getFile().toPath());

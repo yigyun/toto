@@ -96,9 +96,7 @@ public class BoardController {
             log.info("has errors.......");
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
             redirectAttributes.addAttribute("bno", boardDTO.getBno());
-
-
-            return "redirect:/toto/board/modify?bno=" + boardDTO.getBno();
+            return "redirect:/toto/board/modify";
         }
 
         boardService.modify(boardDTO);
@@ -128,6 +126,7 @@ public class BoardController {
 
         redirectAttributes.addFlashAttribute("result", "removed");
         // 후에 이동할 곳 다시 입력
+        log.info("remove 성공");
         return "redirect:/toto/main";
     }
 

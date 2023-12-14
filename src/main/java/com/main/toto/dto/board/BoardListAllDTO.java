@@ -22,7 +22,6 @@ public class BoardListAllDTO {
 
     private LocalDateTime regDate;
 
-    private Long replyCount;
 
     private List<BoardImageDTO> boardImages;
 }

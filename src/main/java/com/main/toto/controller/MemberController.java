@@ -5,6 +5,8 @@ import com.main.toto.dto.member.MemberPwModifyDTO;
 import com.main.toto.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,10 +29,15 @@ public class MemberController {
 
 
     @GetMapping("/login")
-    public String loginGET(String error, String logout){
+    public String loginGET(String error, String logout, Principal principal){
         log.info("error: " + error);
         log.info("logout: " + logout);
 
+
+        if(principal != null) {
+            //이미 로그인한 경우 메인 페이지로 리다이렉트 시킨다.
+            return "redirect:/toto/main";
+        }
         if(logout != null){
             log.info("user logout............");
         }
@@ -97,6 +104,4 @@ public class MemberController {
 
         return "redirect:/toto/main";
     }
-
-
 }

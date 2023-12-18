@@ -2,6 +2,9 @@ package com.main.toto.service;
 
 import com.main.toto.domain.board.Board;
 import com.main.toto.dto.board.BoardDTO;
+import com.main.toto.dto.board.BoardListAllDTO;
+import com.main.toto.dto.page.PageRequestDTO;
+import com.main.toto.dto.page.PageResponseDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +20,9 @@ public interface BoardService {
     void remove(Long bno);
 
     List<BoardDTO> favoriteMain();
+
+    // 페이지, 이미지, 게시글
+    PageResponseDTO<BoardListAllDTO> listWithAll(PageRequestDTO pageRequestDTO);
 
     default Board dtoToEntity(BoardDTO boardDTO){
 

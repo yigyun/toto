@@ -1,5 +1,6 @@
 package com.main.toto.dto.page;
 
+import com.main.toto.domain.board.BoardCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,21 +26,14 @@ public class PageRequestDTO {
     private int page = 1;
 
     @Builder.Default
-    private int size = 10;
-
-    private String type; // 검색 종류 t,c,w,tc,tw,twc
+    private int size = 9;
 
     private String keyword;
 
+    private BoardCategory boardCategory;
+
     // 검색 조건과 페이징 조건을 문자열로 구성
     private String link;
-
-    public String[] getTypes(){
-        if(type == null || type.isEmpty()){
-            return null;
-        }
-        return type.split("");
-    }
 
     public Pageable getPageable(String...props){
         return PageRequest.of(this.page -1, this.size, Sort.by(props).descending());
@@ -53,8 +47,8 @@ public class PageRequestDTO {
             builder.append("page=" + this.page);
             builder.append("&size=" + this.size);
 
-            if(type != null && type.length() > 0){
-                builder.append("&type=" + type);
+            if(boardCategory != null){
+                builder.append("&boardCategory=" + boardCategory);
             }
 
             if(keyword != null){
@@ -64,9 +58,14 @@ public class PageRequestDTO {
                     // 후에 여기도 채우기
                 }
             }
-            link = builder().toString();
+            link = builder.toString();
         }
 
         return link;
+    }
+
+    @Override
+    public String toString(){
+        return getLink();
     }
 }

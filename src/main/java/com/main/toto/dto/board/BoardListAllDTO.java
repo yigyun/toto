@@ -1,5 +1,6 @@
 package com.main.toto.dto.board;
 
+import com.main.toto.domain.board.BoardCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class BoardListAllDTO {
 
     private LocalDateTime regDate;
 
+    private BoardCategory boardCategory;
 
     private List<BoardImageDTO> boardImages;
 }

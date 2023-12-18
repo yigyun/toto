@@ -2,7 +2,9 @@ package com.main.toto.controller;
 
 import com.main.toto.domain.board.BoardCategory;
 import com.main.toto.dto.board.BoardDTO;
+import com.main.toto.dto.board.BoardListAllDTO;
 import com.main.toto.dto.page.PageRequestDTO;
+import com.main.toto.dto.page.PageResponseDTO;
 import com.main.toto.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.File;
 import java.nio.file.Files;
@@ -40,7 +44,7 @@ public class BoardController {
     // 후에 카테고리 별로 1개씩 가져와서 보여주는 느낌으로 할 것
     // board service에서 3개 가져옴.
     @GetMapping("/main")
-    public String favList(PageRequestDTO  pageRequestDTO,Model model){
+    public String favList(PageRequestDTO  pageRequestDTO, Model model){
         // 이거 3개만 일단 가져옴.
         List<BoardDTO> dtoList = boardService.favoriteMain();
         log.info("dtoList: " + dtoList);
@@ -48,7 +52,18 @@ public class BoardController {
         return "/toto/main";
     }
 
-//    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/board/list")
+    public void list(PageRequestDTO pageRequestDTO, Model model){
+
+        PageResponseDTO<BoardListAllDTO> responseDTO =
+                boardService.listWithAll(pageRequestDTO);
+
+        log.info("list............... 페이지 요청 DTO 정보: " + pageRequestDTO);
+        log.info("list............... 페이지 응답 DTO 정보: " + responseDTO);
+        model.addAttribute("responseDTO", responseDTO);
+    }
+
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/board/register")
     public void registerGet(){}
 
@@ -79,8 +94,9 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping({"/board/modify", "/board/read"})
-    public void read(@RequestParam Long bno,  Model model){
+    public void read(@RequestParam Long bno, Model model, PageRequestDTO pageRequestDTO){
         log.info("bno: " + bno);
+
         BoardDTO boardDTO = boardService.readOne(bno);
         model.addAttribute("dto", boardDTO);
     }
@@ -88,6 +104,7 @@ public class BoardController {
     @PreAuthorize("principal.username == #boardDTO.writer")
     @PostMapping("/board/modify")
     public String modify(@Validated BoardDTO boardDTO,
+                         PageRequestDTO pageRequestDTO,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes){
         log.info("board POST modify ....." + boardDTO);
@@ -96,7 +113,9 @@ public class BoardController {
             log.info("has errors.......");
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
             redirectAttributes.addAttribute("bno", boardDTO.getBno());
-            return "redirect:/toto/board/modify";
+            String link = pageRequestDTO.getLink();
+
+            return "redirect:/toto/board/modify?" + link;
         }
 
         boardService.modify(boardDTO);
@@ -106,10 +125,10 @@ public class BoardController {
         redirectAttributes.addAttribute("bno", boardDTO.getBno());
 
 
-        return "redirect:/toto/board/read?bno=" + boardDTO.getBno();
+        return "redirect:/toto/board/read";
     }
 
-//    @PreAuthorize("principal.username == #boardDTO.writer")
+    @PreAuthorize("principal.username == #boardDTO.writer")
     @PostMapping("/board/remove")
     public String remove(BoardDTO boardDTO, RedirectAttributes redirectAttributes){
 
@@ -127,6 +146,7 @@ public class BoardController {
         redirectAttributes.addFlashAttribute("result", "removed");
         // 후에 이동할 곳 다시 입력
         log.info("remove 성공");
+
         return "redirect:/toto/main";
     }
 

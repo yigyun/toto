@@ -3,11 +3,16 @@ package com.main.toto.service;
 import com.main.toto.domain.board.Board;
 import com.main.toto.domain.board.BoardCategory;
 import com.main.toto.dto.board.BoardDTO;
+import com.main.toto.dto.board.BoardListAllDTO;
+import com.main.toto.dto.page.PageRequestDTO;
+import com.main.toto.dto.page.PageResponseDTO;
 import com.main.toto.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
@@ -66,5 +71,21 @@ public class BoardServiceImpl implements BoardService{
             dtoList.add(entityToDTO(boardRepository.findTopByBoardCategoryOrderByBookMarkCountDesc(boardCategory).orElseThrow()));
         }
         return dtoList;
+    }
+
+    @Override
+    public PageResponseDTO<BoardListAllDTO> listWithAll(PageRequestDTO pageRequestDTO) {
+
+        String keyword = pageRequestDTO.getKeyword();
+        BoardCategory boardCategory = pageRequestDTO.getBoardCategory();
+        Pageable pageable = pageRequestDTO.getPageable("bno");
+
+        Page<BoardListAllDTO> result = boardRepository.searchWithAll(boardCategory, keyword, pageable);
+
+        return PageResponseDTO.<BoardListAllDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
     }
 }

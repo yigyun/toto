@@ -45,9 +45,9 @@ public class BoardController {
     // board service에서 3개 가져옴.
     @GetMapping("/main")
     public String favList(PageRequestDTO  pageRequestDTO, Model model){
-        // 이거 3개만 일단 가져옴.
+
+        log.info("main GET....");
         List<BoardDTO> dtoList = boardService.favoriteMain();
-        log.info("dtoList: " + dtoList);
         model.addAttribute("dtoList", dtoList);
         return "/toto/main";
     }
@@ -55,11 +55,9 @@ public class BoardController {
     @GetMapping("/board/list")
     public void list(PageRequestDTO pageRequestDTO, Model model){
 
+        log.info("board list GET....");
         PageResponseDTO<BoardListAllDTO> responseDTO =
                 boardService.listWithAll(pageRequestDTO);
-
-        log.info("list............... 페이지 요청 DTO 정보: " + pageRequestDTO);
-        log.info("list............... 페이지 응답 DTO 정보: " + responseDTO);
         model.addAttribute("responseDTO", responseDTO);
     }
 
@@ -94,8 +92,12 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping({"/board/modify", "/board/read"})
-    public void read(@RequestParam Long bno, Model model, PageRequestDTO pageRequestDTO){
+    public void read(@RequestParam Long bno, Model model, PageRequestDTO pageRequestDTO, HttpServletRequest request){
         log.info("bno: " + bno);
+
+        HttpSession session = request.getSession();
+        String referer = request.getHeader("Referer");
+        session.setAttribute("prevPage", referer);
 
         BoardDTO boardDTO = boardService.readOne(bno);
         model.addAttribute("dto", boardDTO);

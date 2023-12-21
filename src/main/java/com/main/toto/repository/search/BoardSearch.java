@@ -14,6 +14,5 @@ public interface BoardSearch {
 
     Page<BoardListAllDTO> searchWithAll(BoardCategory boardCategory, String keyword, Pageable pageable);
 
-    Page<BoardListAllDTO> searchWithAllCustom(BoardSearchCondition condition,
-                                              Pageable pageable);
+    Page<BoardListAllDTO> searchWithBookMark(String mid, Pageable pageable);
 }

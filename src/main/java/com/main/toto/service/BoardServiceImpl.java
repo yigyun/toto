@@ -2,6 +2,7 @@ package com.main.toto.service;
 
 import com.main.toto.domain.board.Board;
 import com.main.toto.domain.board.BoardCategory;
+import com.main.toto.domain.bookMark.BookMark;
 import com.main.toto.dto.board.BoardDTO;
 import com.main.toto.dto.board.BoardListAllDTO;
 import com.main.toto.dto.page.PageRequestDTO;
@@ -27,6 +28,7 @@ import java.util.List;
 public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
+    private final BookMarkService bookMarkService;
     private final ModelMapper modelMapper;
 
     @Override
@@ -88,4 +90,19 @@ public class BoardServiceImpl implements BoardService{
                 .total((int)result.getTotalElements())
                 .build();
     }
+
+    @Override
+    public PageResponseDTO<BoardListAllDTO> listWithBookMark(PageRequestDTO pageRequestDTO, String mid) {
+
+        Pageable pageable = pageRequestDTO.getPageable("bno");
+
+        Page<BoardListAllDTO> result = boardRepository.searchWithBookMark(mid, pageable);
+
+        return PageResponseDTO.<BoardListAllDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
 }

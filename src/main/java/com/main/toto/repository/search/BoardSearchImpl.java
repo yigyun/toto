@@ -3,21 +3,22 @@ package com.main.toto.repository.search;
 import com.main.toto.domain.board.Board;
 import com.main.toto.domain.board.BoardCategory;
 import com.main.toto.domain.board.QBoard;
-import com.main.toto.dto.board.BoardDTO;
+import com.main.toto.domain.bookMark.BookMark;
 import com.main.toto.dto.board.BoardImageDTO;
 import com.main.toto.dto.board.BoardListAllDTO;
 
+import com.main.toto.repository.BookMarkRepository;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
+
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
-
 import com.querydsl.jpa.impl.JPAQuery;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,8 +33,12 @@ import static com.main.toto.domain.board.QBoard.*;
 @Log4j2
 public class BoardSearchImpl extends Querydsl5RepositorySupport implements BoardSearch{
 
-        public BoardSearchImpl(){
+
+        private final BookMarkRepository bookMarkRepository;
+
+        public BoardSearchImpl(BookMarkRepository bookMarkRepository){
             super(Board.class);
+            this.bookMarkRepository = bookMarkRepository;
         }
 
         @Override
@@ -160,8 +165,28 @@ public class BoardSearchImpl extends Querydsl5RepositorySupport implements Board
         }
 
         @Override
-        public Page<BoardListAllDTO> searchWithAllCustom(BoardSearchCondition condition, Pageable pageable) {
-            return null;
-    }
+        public Page<BoardListAllDTO> searchWithBookMark(String mid, Pageable pageable) {
+            List<BookMark> bookMarks = bookMarkRepository.findByMember_Mid(mid);
 
-}
+            JPAQuery<BoardListAllDTO> query = selectFrom(QBoard.board)
+                    .where(QBoard.board.in(
+                            bookMarks.stream()
+                                    .map(BookMark::getBoard)
+                                    .collect(Collectors.toList())
+                    ))
+                    .select(Projections.bean(BoardListAllDTO.class,
+                            QBoard.board.bno,
+                            QBoard.board.title,
+                            QBoard.board.writer,
+                            QBoard.board.regDate,
+                            QBoard.board.boardCategory
+                    ));
+
+            getQuerydsl().applyPagination(pageable, query);
+
+            List<BoardListAllDTO> boardList = query.fetch();
+            long totalCount = query.fetchCount();
+
+            return new PageImpl<>(boardList, pageable, totalCount);
+        }
+    }

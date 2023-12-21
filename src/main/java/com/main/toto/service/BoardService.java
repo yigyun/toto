@@ -24,6 +24,9 @@ public interface BoardService {
     // 페이지, 이미지, 게시글
     PageResponseDTO<BoardListAllDTO> listWithAll(PageRequestDTO pageRequestDTO);
 
+    //페이지, 이미지, 게시글 with BookMark
+    PageResponseDTO<BoardListAllDTO> listWithBookMark(PageRequestDTO pageRequestDTO, String mid);
+
     default Board dtoToEntity(BoardDTO boardDTO){
 
         Board board = Board.builder()

@@ -6,6 +6,7 @@ import com.main.toto.dto.board.BoardListAllDTO;
 import com.main.toto.dto.page.PageRequestDTO;
 import com.main.toto.dto.page.PageResponseDTO;
 import com.main.toto.service.BoardService;
+import com.main.toto.service.BookMarkService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,6 +41,7 @@ public class BoardController {
     private String uploadPath;
 
     private final BoardService boardService;
+    private final BookMarkService bookMarkService;
 
 
 
@@ -101,6 +105,14 @@ public class BoardController {
 
         BoardDTO boardDTO = boardService.readOne(bno);
         model.addAttribute("dto", boardDTO);
+
+        // 사용자의 아이디
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String mid = auth.getName();
+
+        //북마크 확인
+        boolean isBookMark = bookMarkService.existsByMemberAndBoard(mid,bno);
+        model.addAttribute("isBookMark", isBookMark);
     }
 
     @PreAuthorize("principal.username == #boardDTO.writer")

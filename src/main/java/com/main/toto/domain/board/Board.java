@@ -1,6 +1,7 @@
 package com.main.toto.domain.board;
 
 import com.main.toto.domain.BaseEntity;
+import com.main.toto.domain.bookMark.BookMark;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
@@ -13,7 +14,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "imageSet")
+@ToString(exclude = {"imageSet","bookMarks"})
 public class Board extends BaseEntity {
 
     @Id
@@ -31,6 +32,12 @@ public class Board extends BaseEntity {
 
     // 후에 유저랑 연관관계 맺어서 관리해야함.
     private Long bookMarkCount = 1L;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<BookMark> bookMarks = new HashSet<>();
+
+    // 기본 가격
+    private Long price = 5000L;
 
     // 지연 로딩, cascade = CascadeType.ALL은 Board가 삭제되면 연관된 이미지도 삭제된다. 그런데 첨부파일만 삭제하는 경우를 위해 orphanRemoval = true를 추가한다.
     @OneToMany(mappedBy = "board", cascade = {CascadeType.ALL},
@@ -67,12 +74,12 @@ public class Board extends BaseEntity {
         this.content = content;
     }
 
-    public void increaseBookMarkCount(){
-        this.bookMarkCount++;
+    public void addBookMark(BookMark bookMark){
+        this.bookMarks.add(bookMark);
     }
 
-    public void decreaseBookMarkCount(){
-        this.bookMarkCount--;
+    public void removeBookMark(BookMark bookMark){
+        this.bookMarks.remove(bookMark);
     }
 
 }

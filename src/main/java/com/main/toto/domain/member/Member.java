@@ -1,6 +1,7 @@
 package com.main.toto.domain.member;
 
 import com.main.toto.domain.BaseEntity;
+import com.main.toto.domain.bookMark.BookMark;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = "roleSet")
+@ToString(exclude = {"roleSet","bookMarks"})
 @Getter
 public class Member extends BaseEntity {
 
@@ -51,7 +52,19 @@ public class Member extends BaseEntity {
             this.roleSet.add(memberRole);
         }
 
+        @OneToMany(mappedBy = "member")
+        private Set<BookMark> bookMarks = new HashSet<>();
+
         public void clearRoles(){
             this.roleSet.clear();
         }
+
+
+    public void addBookmark(BookMark bookMark) {
+        this.bookMarks.add(bookMark);
+    }
+
+    public void removeBookmark(BookMark bookMark) {
+        this.bookMarks.remove(bookMark);
+    }
 }

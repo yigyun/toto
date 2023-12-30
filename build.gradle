@@ -36,6 +36,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 
+    // 웹 소켓
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    // Stomp
+    implementation 'org.springframework:spring-messaging'
+
     // 섬네일 라이브러리로 첨부파일이 이미지면 용량을 줄여 작은 이미지를 생성하고 이를 사용하도록 구성하기위해 추가.
     implementation 'net.coobird:thumbnailator:0.4.16'
 

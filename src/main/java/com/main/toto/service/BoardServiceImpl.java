@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,11 @@ public class BoardServiceImpl implements BoardService{
         Board board = dtoToEntity(boardDTO);
 
         return boardRepository.save(board).getBno();
+    }
+
+    @Override
+    public LocalDateTime readDate(Long bno) {
+        return boardRepository.findById(bno).orElseThrow().getRegDate();
     }
 
     @Override

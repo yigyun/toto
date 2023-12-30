@@ -6,6 +6,8 @@ import com.main.toto.dto.board.BoardListAllDTO;
 import com.main.toto.dto.page.PageRequestDTO;
 import com.main.toto.dto.page.PageResponseDTO;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +16,8 @@ public interface BoardService {
     Long register(BoardDTO boardDTO);
 
     BoardDTO readOne(Long bno);
+
+    LocalDateTime readDate(Long bno);
 
     void modify(BoardDTO boardDTO);
 

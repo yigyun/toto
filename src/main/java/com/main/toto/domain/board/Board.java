@@ -6,6 +6,8 @@ import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,6 +50,15 @@ public class Board extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private BoardCategory boardCategory;
+
+    private LocalDateTime auctionStartTime;
+
+    public Duration getRemainTime(){
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(auctionStartTime, now);
+        Duration remaining = Duration.ofHours(24).minus(duration);
+        return remaining.isNegative() ? Duration.ZERO : remaining;
+    }
 
     public void addImage(String uuid, String fileName){
         BoardImage boardImage = BoardImage.builder()

@@ -1,8 +1,8 @@
-package com.main.toto.domain.bid;
+package com.main.toto.domain.board;
 
 import lombok.Getter;
 
-public enum BidStatus {
+public enum AuctionStatus {
 
     SUCCESS("낙찰"),
     BIDDING("입찰중"),
@@ -11,7 +11,7 @@ public enum BidStatus {
     @Getter
     private final String description;
 
-    BidStatus(String description) {
+    AuctionStatus(String description) {
         this.description = description;
     }
 

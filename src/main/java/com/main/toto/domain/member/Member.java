@@ -1,12 +1,15 @@
 package com.main.toto.domain.member;
 
 import com.main.toto.domain.BaseEntity;
+import com.main.toto.domain.bid.Bid;
 import com.main.toto.domain.bookMark.BookMark;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Entity
 @NoArgsConstructor
@@ -30,7 +33,7 @@ public class Member extends BaseEntity {
         @Enumerated
         @ElementCollection(fetch = FetchType.LAZY)
         @Builder.Default // HashSet을 자동으로 만듬.
-        private Set<MemberRole> roleSet = new HashSet<>();
+        private Set<MemberRole> roleSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
         public void changePassword(String mpassword){
             this.mpassword = mpassword;
@@ -52,19 +55,23 @@ public class Member extends BaseEntity {
             this.roleSet.add(memberRole);
         }
 
-        @OneToMany(mappedBy = "member")
-        private Set<BookMark> bookMarks = new HashSet<>();
+        @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+        private Set<BookMark> bookMarks = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
+        @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+        private Set<Bid> bids = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
 
         public void clearRoles(){
-            this.roleSet.clear();
+                this.roleSet.clear();
+            }
+
+
+        public void addBookmark(BookMark bookMark) {
+            this.bookMarks.add(bookMark);
         }
 
-
-    public void addBookmark(BookMark bookMark) {
-        this.bookMarks.add(bookMark);
-    }
-
-    public void removeBookmark(BookMark bookMark) {
-        this.bookMarks.remove(bookMark);
-    }
+        public void removeBookmark(BookMark bookMark) {
+            this.bookMarks.remove(bookMark);
+        }
 }

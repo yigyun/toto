@@ -1,6 +1,7 @@
 package com.main.toto.domain.board;
 
 import com.main.toto.domain.BaseEntity;
+import com.main.toto.domain.bid.Bid;
 import com.main.toto.domain.bookMark.BookMark;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
@@ -8,8 +9,10 @@ import org.hibernate.annotations.BatchSize;
 import javax.persistence.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Entity
 @Getter
@@ -39,17 +42,26 @@ public class Board extends BaseEntity {
     private Set<BookMark> bookMarks = new HashSet<>();
 
     // 기본 가격
-    private Long price = 5000L;
+    private Long price;
 
     // 지연 로딩, cascade = CascadeType.ALL은 Board가 삭제되면 연관된 이미지도 삭제된다. 그런데 첨부파일만 삭제하는 경우를 위해 orphanRemoval = true를 추가한다.
     @OneToMany(mappedBy = "board", cascade = {CascadeType.ALL},
             fetch = FetchType.LAZY, orphanRemoval = true)
     @Builder.Default
     @BatchSize(size = 20)
-    private Set<BoardImage> imageSet = new HashSet<>();
+    private Set<BoardImage> imageSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     @Enumerated(EnumType.STRING)
     private BoardCategory boardCategory;
+
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = {CascadeType.ALL}
+    ,orphanRemoval = true)
+    @Builder.Default
+    @BatchSize(size = 50)
+    private Set<Bid> bidSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
+    @Enumerated(EnumType.STRING)
+    private AuctionStatus auctionStatus = AuctionStatus.BIDDING;
 
     private LocalDateTime auctionStartTime;
 
@@ -93,4 +105,11 @@ public class Board extends BaseEntity {
         this.bookMarks.remove(bookMark);
     }
 
+    public void addBid(Bid bid){
+        this.bidSet.add(bid);
+    }
+
+    public void changePrice(Long price){
+        this.price = price;
+    }
 }

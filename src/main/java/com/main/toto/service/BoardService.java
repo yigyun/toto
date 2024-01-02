@@ -40,6 +40,7 @@ public interface BoardService {
                 .writer(boardDTO.getWriter())
                 .boardCategory(boardDTO.getBoardCategory())
                 .bookMarkCount(1L)
+                .price(boardDTO.getPrice())
                 .build();
 
         if(boardDTO.getFileNames() != null) {
@@ -64,6 +65,7 @@ public interface BoardService {
                 .regDate(board.getRegDate())
                 .modDate(board.getModDate())
                 .bookMarkCount(1L)
+                .price(board.getPrice())
                 .build();
 
         List<String> fileNames = board.getImageSet().stream().sorted().map(image ->

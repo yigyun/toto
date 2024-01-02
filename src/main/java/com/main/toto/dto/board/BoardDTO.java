@@ -25,6 +25,8 @@ public class BoardDTO {
 
     private String writer;
 
+    private Long price;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime regDate;
 

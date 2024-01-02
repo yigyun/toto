@@ -1,10 +1,12 @@
 package com.main.toto.controller;
 
 import com.main.toto.domain.board.BoardCategory;
+import com.main.toto.dto.BidDTO;
 import com.main.toto.dto.board.BoardDTO;
 import com.main.toto.dto.board.BoardListAllDTO;
 import com.main.toto.dto.page.PageRequestDTO;
 import com.main.toto.dto.page.PageResponseDTO;
+import com.main.toto.service.AuctionServiceImpl;
 import com.main.toto.service.BoardService;
 import com.main.toto.service.BookMarkService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,11 +45,9 @@ public class BoardController {
 
     private final BoardService boardService;
     private final BookMarkService bookMarkService;
+    private final AuctionServiceImpl auctionService;
 
-
-
-    // 후에 카테고리 별로 1개씩 가져와서 보여주는 느낌으로 할 것
-    // board service에서 3개 가져옴.
+    //  카테고리 별로 1개씩 가져와서 보여주는 느낌으로 할 것
     @GetMapping("/main")
     public String favList(PageRequestDTO  pageRequestDTO, Model model){
 
@@ -54,6 +55,19 @@ public class BoardController {
         List<BoardDTO> dtoList = boardService.favoriteMain();
         model.addAttribute("dtoList", dtoList);
         return "/toto/main";
+    }
+
+    @PostMapping("/board/bid")
+    public ResponseEntity<String> placeBid(@RequestBody BidDTO bidDTO){
+        log.info("bid Post... : " + bidDTO);
+        //getBid 널포인트익셉션 방지하기.
+        if(auctionService.getBid(bidDTO.getBno()) != null){
+            auctionService.updateBid(bidDTO);
+            return ResponseEntity.ok("success update");
+        }else{
+            auctionService.createBid(bidDTO);
+            return ResponseEntity.ok("success create");
+        }
     }
 
     @GetMapping("/board/list")

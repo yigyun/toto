@@ -51,6 +51,7 @@ public class DataInitializer {
                         .bookMarkCount(1L)
                         .boardCategory(category)
                         .fileNames(Arrays.asList(boardImage.getUuid() + "_" + boardImage.getFileName()))
+                        .price(5000L)
                         .build();
                 // board 객체의 필드를 설정합니다.
 

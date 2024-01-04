@@ -18,9 +18,19 @@
 ## 설명
 
 * 로그인 및 회원가입
- * 1
+  * 로그인
+    로그인은 Spring Security 기반해서 기본 Form Login 방식과 Oauth2.0 기반(네이버, 구글)을 제공했다.
+    
+    [Detail](https://github.com/yigyun/toto/blob/master/login)
+    
 * 게시판
+  * CRUD
+  * 즐겨찾기
+  * 실시간
+  * 파일처리(이미지)
+  * 인증 및 인가 
 * 경매
+  * 입찰 
 
 
 

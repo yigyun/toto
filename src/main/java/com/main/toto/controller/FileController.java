@@ -118,7 +118,8 @@ public class FileController {
 
             if(contentType.startsWith("image")){
                 File thumbnailFile = new File(uploadPath + File.separator + "s_" + fileName);
-                thumbnailFile.delete();
+                if(!thumbnailFile.delete())
+                    log.error("delete file error");
             }
         } catch (Exception e){
             log.error(e.getMessage());

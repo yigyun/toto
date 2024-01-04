@@ -9,10 +9,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
-        use_sql_comments: true # JPQL 쿼리 로그 남기기
+#    properties:
+#      hibernate:
+#        format_sql: true
+#        use_sql_comments: true # JPQL 쿼리 로그 남기기
 
   security:
     oauth2:

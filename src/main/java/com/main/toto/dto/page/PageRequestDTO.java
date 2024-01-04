@@ -44,16 +44,16 @@ public class PageRequestDTO {
         if(link == null){
             StringBuilder builder = new StringBuilder();
 
-            builder.append("page=" + this.page);
-            builder.append("&size=" + this.size);
+            builder.append("page=").append(this.page);
+            builder.append("&size=").append(this.size);
 
             if(boardCategory != null){
-                builder.append("&boardCategory=" + boardCategory);
+                builder.append("&boardCategory=").append(boardCategory);
             }
 
             if(keyword != null){
                 try{
-                    builder.append("&keyword=" + URLEncoder.encode(keyword, "UTF-8"));
+                    builder.append("&keyword=").append(URLEncoder.encode(keyword, "UTF-8"));
                 }catch (UnsupportedEncodingException e){
                     // 후에 여기도 채우기
                 }

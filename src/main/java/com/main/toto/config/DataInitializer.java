@@ -34,7 +34,7 @@ public class DataInitializer {
             // member 객체의 필드를 설정합니다.
             memberService.join(memberJoinDTO);
 
-            Long count = 1L;
+            long count = 1L;
             // 각 카테고리별 Board 데이터 생성
             for (BoardCategory category : BoardCategory.values()) {
 

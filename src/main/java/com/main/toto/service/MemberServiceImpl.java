@@ -49,6 +49,5 @@ public class MemberServiceImpl implements MemberService{
     public void changePw(String mpassword, String mid) {
         log.info("changePw............");
         memberRepository.updatePassword(mpassword, mid);
-
     }
 }

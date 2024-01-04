@@ -5,12 +5,20 @@ import com.main.toto.domain.board.BoardCategory;
 import com.main.toto.repository.search.BoardSearch;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.persistence.LockModeType;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<Board, Long>, BoardSearch {
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select b from Board b where b.bno = :bno")
+    Optional<Board> findWithLockByBno(@Param("bno") Long bno);
 
     @EntityGraph(attributePaths = {"imageSet"})
     @Query("select b from Board b where b.bno = :bno")
@@ -24,4 +32,7 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardSearch
     @EntityGraph(attributePaths = {"imageSet"})
     @Query("SELECT b FROM Board b WHERE b.boardCategory = :boardCategory")
     Optional<Board> findByBoardCategory(@Param("boardCategory") BoardCategory boardCategory);
+
+
+    List<Board> findAllByRegDateBefore(LocalDateTime threshold);
 }

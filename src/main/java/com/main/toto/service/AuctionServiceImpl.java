@@ -44,7 +44,7 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public Long createBid(BidDTO bidDTO) {
 
-        Board board = boardRepository.findById(bidDTO.getBno()).orElseThrow(
+        Board board = boardRepository.findWithLockByBno(bidDTO.getBno()).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + bidDTO.getBno()));
 
         Member member = memberRepository.findById(bidDTO.getMid()).orElseThrow(
@@ -77,7 +77,7 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public BidDTO updateBid(BidDTO bidDTO) {
 
-        Bid bid = bidRepository.findByMember_MidAndBoard_Bno(bidDTO.getMid(), bidDTO.getBno()).orElseThrow();
+        Bid bid = bidRepository.findWithLockByMember_MidAndBoard_Bno(bidDTO.getMid(), bidDTO.getBno()).orElseThrow();
         bid.changePrice(bidDTO.getPrice());
         return entityToDTO(bid);
     }

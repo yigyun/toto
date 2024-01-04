@@ -76,11 +76,6 @@ public class MemberController {
         return "redirect:/toto/member/login";
     }
 
-    @GetMapping("/main")
-    public String mainGET(){
-        log.info("main get............");
-        return "Main이다 임마";
-    }
 
     @GetMapping("/modify")
     public String pwModifyGET(Model model){

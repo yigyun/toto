@@ -60,7 +60,7 @@ public class BoardController {
     @PostMapping("/board/bid")
     public ResponseEntity<String> placeBid(@RequestBody BidDTO bidDTO){
         log.info("bid Post... : " + bidDTO);
-        //getBid 널포인트익셉션 방지하기.
+
         if(auctionService.getBid(bidDTO.getBno()) != null){
             auctionService.updateBid(bidDTO);
             return ResponseEntity.ok("success update");
@@ -187,11 +187,15 @@ public class BoardController {
             try{
                 String contentType = Files.probeContentType(resource.getFile().toPath());
 
-                resource.getFile().delete();
+                if(!resource.getFile().delete())
+                    log.error("delete file error");
+
+
 
                 if(contentType.startsWith("image")){
                     File thumbnail = new File(uploadPath + File.separator + "s_" + fileName);
-                    thumbnail.delete();
+                    if(!thumbnail.delete())
+                        log.error("delete file error");
                 }
             } catch (Exception e){
                 log.error("delete file error - " + e.getMessage());

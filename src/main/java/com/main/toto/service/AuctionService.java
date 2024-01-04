@@ -1,7 +1,6 @@
 package com.main.toto.service;
 
 import com.main.toto.domain.bid.Bid;
-import com.main.toto.domain.bid.BidStatus;
 import com.main.toto.dto.BidDTO;
 
 import java.time.LocalDateTime;

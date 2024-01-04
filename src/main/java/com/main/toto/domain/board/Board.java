@@ -112,4 +112,8 @@ public class Board extends BaseEntity {
     public void changePrice(Long price){
         this.price = price;
     }
+
+    public void changeStatus(AuctionStatus auctionStatus){
+        this.auctionStatus = auctionStatus;
+    }
 }

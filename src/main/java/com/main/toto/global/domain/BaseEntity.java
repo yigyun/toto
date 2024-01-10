@@ -1,4 +1,4 @@
-package com.main.toto.domain;
+package com.main.toto.global.domain;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

@@ -2,7 +2,7 @@ package com.main.toto.member.entity.member;
 
 import com.main.toto.auction.entity.bid.Bid;
 import com.main.toto.bookMark.entity.bookMark.BookMark;
-import com.main.toto.domain.BaseEntity;
+import com.main.toto.global.domain.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;

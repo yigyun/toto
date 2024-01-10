@@ -1,8 +1,8 @@
 package com.main.toto.global.security.service;
 
-import com.main.toto.domain.member.Member;
 import com.main.toto.global.security.dto.MemberSecurityDTO;
-import com.main.toto.repository.MemberRepository;
+import com.main.toto.member.entity.member.Member;
+import com.main.toto.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

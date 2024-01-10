@@ -1,8 +1,8 @@
 package com.main.toto.member;
 
-import com.main.toto.domain.member.Member;
-import com.main.toto.domain.member.MemberRole;
-import com.main.toto.repository.MemberRepository;
+import com.main.toto.member.entity.member.Member;
+import com.main.toto.member.entity.member.MemberRole;
+import com.main.toto.member.repository.MemberRepository;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

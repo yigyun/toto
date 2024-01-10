@@ -1,20 +1,17 @@
 package com.main.toto.config;
 
-import com.main.toto.domain.board.Board;
-import com.main.toto.domain.board.BoardCategory;
-import com.main.toto.domain.board.BoardImage;
-import com.main.toto.domain.member.Member;
-import com.main.toto.dto.board.BoardDTO;
-import com.main.toto.dto.member.MemberJoinDTO;
-import com.main.toto.service.BoardService;
-import com.main.toto.service.MemberService;
+import com.main.toto.auction.dto.board.BoardDTO;
+import com.main.toto.auction.entity.board.BoardCategory;
+import com.main.toto.auction.entity.board.BoardImage;
+import com.main.toto.auction.service.board.BoardService;
+import com.main.toto.member.dto.member.MemberJoinDTO;
+import com.main.toto.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
-import java.util.UUID;
 
 @Configuration
 @RequiredArgsConstructor

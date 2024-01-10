@@ -1,9 +1,9 @@
 package com.main.toto.config;
 
 
-import com.main.toto.domain.board.AuctionStatus;
-import com.main.toto.domain.board.Board;
-import com.main.toto.repository.BoardRepository;
+import com.main.toto.auction.entity.board.AuctionStatus;
+import com.main.toto.auction.entity.board.Board;
+import com.main.toto.auction.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

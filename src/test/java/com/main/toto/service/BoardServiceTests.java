@@ -1,9 +1,10 @@
 package com.main.toto.service;
 
-import com.main.toto.domain.board.Board;
-import com.main.toto.domain.board.BoardCategory;
-import com.main.toto.dto.board.BoardDTO;
-import com.main.toto.repository.BoardRepository;
+import com.main.toto.auction.service.board.BoardService;
+import com.main.toto.auction.entity.board.Board;
+import com.main.toto.auction.entity.board.BoardCategory;
+import com.main.toto.auction.dto.board.BoardDTO;
+import com.main.toto.auction.repository.BoardRepository;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,10 @@ public class BoardServiceTests {
 
     @Autowired
     BoardRepository boardRepository;
+
+    /**
+     * 게시글 등록 테스트
+     */
 
     @Test
     public void testRegister(){
@@ -61,6 +66,10 @@ public class BoardServiceTests {
 
     }
 
+
+    /**
+     * dto -> entity -> dto 테스트
+     */
     @Test
     @Transactional
     public void dtoToEntityToDtoTest(){
@@ -82,4 +91,5 @@ public class BoardServiceTests {
         Board board2 = boardService.dtoToEntity(boardDTO1);
         log.info("board2 : " + board2);
     }
+
 }

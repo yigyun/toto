@@ -1,16 +1,14 @@
 package com.main.toto.repository;
 
-import com.main.toto.domain.board.Board;
-import com.main.toto.domain.board.BoardCategory;
+import com.main.toto.auction.repository.BoardRepository;
+import com.main.toto.auction.entity.board.Board;
+import com.main.toto.auction.entity.board.BoardCategory;
 
-import com.main.toto.domain.board.BoardImage;
-import com.main.toto.dto.board.BoardDTO;
+import com.main.toto.auction.entity.board.BoardImage;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

@@ -86,7 +86,10 @@ public class BoardServiceImpl implements BoardService{
         BoardCategory boardCategory = pageRequestDTO.getBoardCategory();
         Pageable pageable = pageRequestDTO.getPageable("bno");
 
-        Page<BoardListAllDTO> result = boardRepository.searchWithAll(boardCategory, keyword, pageable);
+        Page<BoardListAllDTO> result = null;
+        if((pageRequestDTO.getBoardCategory() == null )) result = boardRepository.searchWithKeyword(keyword, pageable);
+        else if((pageRequestDTO.getKeyword() == null || pageRequestDTO.getKeyword().trim().length() == 0)) result = boardRepository.searchWithCategory(boardCategory, pageable);
+        else result = boardRepository.searchWithAll(boardCategory, keyword, pageable);
 
         return PageResponseDTO.<BoardListAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)

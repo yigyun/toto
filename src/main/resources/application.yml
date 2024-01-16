@@ -1,6 +1,10 @@
 
 
 spring:
+  batch:
+    jdbc:
+      initialize-schema: always
+
   datasource:
     url: jdbc:h2:tcp://localhost/~/test
     driver-class-name: org.h2.Driver
@@ -9,8 +13,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-#    properties:
-#      hibernate:
+    properties:
+      hibernate:
 #        format_sql: true
 #        use_sql_comments: true # JPQL 쿼리 로그 남기기
 
@@ -44,6 +48,7 @@ logging:
     org.springframework: info
     org.com: debug
     org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
     org:
       springframework:
         security: trace

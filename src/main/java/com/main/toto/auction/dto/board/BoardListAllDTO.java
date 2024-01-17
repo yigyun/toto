@@ -21,6 +21,8 @@ public class BoardListAllDTO {
 
     private String writer;
 
+    private Long price;
+
     private LocalDateTime regDate;
 
     private BoardCategory boardCategory;

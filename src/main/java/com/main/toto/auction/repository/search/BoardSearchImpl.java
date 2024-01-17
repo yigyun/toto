@@ -121,6 +121,7 @@ public class BoardSearchImpl extends Querydsl5RepositorySupport implements Board
                         .title(board1.getTitle())
                         .writer(board1.getWriter())
                         .regDate(board1.getRegDate())
+                        .price(board1.getPrice())
                         .boardCategory(board1.getBoardCategory())
                         // 후에 price 추가.
                         // 시간도 추가
@@ -170,6 +171,7 @@ public class BoardSearchImpl extends Querydsl5RepositorySupport implements Board
                     .title(board1.getTitle())
                     .writer(board1.getWriter())
                     .regDate(board1.getRegDate())
+                    .price(board1.getPrice())
                     .boardCategory(board1.getBoardCategory())
                     .build();
 
@@ -216,6 +218,7 @@ public class BoardSearchImpl extends Querydsl5RepositorySupport implements Board
                     .title(board1.getTitle())
                     .writer(board1.getWriter())
                     .regDate(board1.getRegDate())
+                    .price(board1.getPrice())
                     .boardCategory(board1.getBoardCategory())
                     .build();
 

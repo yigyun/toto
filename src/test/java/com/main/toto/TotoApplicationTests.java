@@ -21,8 +21,8 @@ class TotoApplicationTests {
      * 줄이는 방법: 연산 값을 들고 있으면 됨.
      */
 
-    static boolean[] visited ;
-    static List<Integer>[] list;
+
+    static int[] array;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new java.io.InputStreamReader(System.in));
@@ -30,36 +30,41 @@ class TotoApplicationTests {
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
 
-        visited = new boolean[N+1];;
-        int count = 0;
-
-        list = new ArrayList[N+1];
-
-        for(int i = 1; i <= N; i++){
-            list[i] = new ArrayList<>();
+        array = new int[N+1];
+        for(int i = 0; i <= N; i++){
+            array[i] = i;
         }
 
         for(int i = 0; i < M; i++){
             st = new StringTokenizer(br.readLine());
-            int u = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
-            list[u].add(v);
-            list[v].add(u);
-        }
-
-        for(int i = 1; i < N+1; i++){
-            if(!visited[i]){
-                count++;
-                dfs(i);
+            int c = Integer.parseInt(st.nextToken());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            if(c == 0){
+                union(a, b);
+            } else{
+                int num1 = find(a);
+                int num2 = find(b);
+                if(num1==num2) System.out.println("YES");
+                else System.out.println("NO");
             }
         }
-        System.out.println(count);
     }
 
-    static void dfs(int u){
-            visited[u] = true;
-            for(int num : list[u]){
-                if(!visited[num]) dfs(num);
-            }
+    static int find(int a){
+        if(a == array[a])
+            return a;
+        else
+            return array[a] = find(array[a]);
     }
+
+    static void union(int a, int b){
+        int k = find(a);
+        int l = find(b);
+        if(k != l) {
+            if(k <= l) array[l] = k;
+            else array[k] = l;
+        }
+    }
+
 }

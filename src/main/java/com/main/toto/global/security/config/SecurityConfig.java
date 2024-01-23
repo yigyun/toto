@@ -37,7 +37,7 @@ public class SecurityConfig {
     private final TotoUserDetailService userDetailsService;
 
     @Bean
-    public SecurityFilterChain filterchain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
         http.csrf().disable();
         http.formLogin((form) -> form.loginPage("/toto/member/login")
@@ -60,7 +60,8 @@ public class SecurityConfig {
                 .tokenValiditySeconds(60 * 60 * 24 * 7); // 7일
 
         http.exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler());
+                .accessDeniedHandler(accessDeniedHandler())
+                ;
 
         http.oauth2Login()
                 .loginPage("/toto/member/login")

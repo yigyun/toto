@@ -7,6 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -23,7 +25,7 @@ import java.io.IOException;
 
 @Log4j2
 @RequiredArgsConstructor
-public class TotoLoginSuccessHandler implements AuthenticationSuccessHandler {
+public class TotoLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     private RequestCache requestCache = new HttpSessionRequestCache();
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
@@ -32,7 +34,19 @@ public class TotoLoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
-        resultRedirectStrategy(request, response, authentication);
+
+        SavedRequest savedRequest = (SavedRequest) request.getSession().getAttribute("SPRING_SECURITY_SAVED_REQUEST");
+        // 이동할 url이 존재하다 = 인증이 필요한 페이지에 방문했었다.
+        if(savedRequest != null){
+            // 이전 페이지의 url을 가져온다.
+            String targetUrl = savedRequest.getRedirectUrl();
+            redirectStrategy.sendRedirect(request, response, targetUrl);
+        }else{
+            // 직접 로그인 페이지를 방문한 경우는 main으로 이동한다.
+            String targetUrl = "/toto/main";
+            redirectStrategy.sendRedirect(request, response, targetUrl);
+        }
+//        resultRedirectStrategy(request, response, authentication);
     }
 
     protected void resultRedirectStrategy(HttpServletRequest request, HttpServletResponse response, Authentication authentication)

@@ -30,6 +30,12 @@ public class DataInitializer {
             memberJoinDTO.setEmail("test@naver.com");
             // member 객체의 필드를 설정합니다.
             memberService.join(memberJoinDTO);
+            MemberJoinDTO memberJoinDTO2 = new MemberJoinDTO();
+            memberJoinDTO2.setMid("test2");
+            memberJoinDTO2.setMpassword("test2");
+            memberJoinDTO2.setEmail("test2@naver.com");
+            // member 객체의 필드를 설정합니다.
+            memberService.join(memberJoinDTO2);
 
             long count = 1L;
             // 각 카테고리별 Board 데이터 생성

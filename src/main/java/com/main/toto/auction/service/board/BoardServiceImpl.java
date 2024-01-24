@@ -112,4 +112,10 @@ public class BoardServiceImpl implements BoardService{
                 .build();
     }
 
+    @Override
+    public boolean checkWriter(Long bno, String mid) {
+        BoardDTO boardDTO = readOne(bno);
+        return mid.equals(boardDTO.getWriter());
+    }
+
 }

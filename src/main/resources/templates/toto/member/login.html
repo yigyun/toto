@@ -111,3 +111,23 @@
     </main>
   </body>
 </html>
+<script th:inline="javascript">
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const errors = urlParams.get('errors');
+
+        if(errors){
+            switch (errors) {
+                case 'INVALID_USERNAME':
+                    alert('유효하지 않은 아이디입니다.');
+                    break;
+                case 'INVALID_PASSWORD':
+                    alert('유효하지 않은 비밀번호입니다.');
+                    break;
+                case 'AUTHENTICATION_FAILED':
+                    alert('로그인이 거부되었습니다.');
+                    break;
+            }
+        }
+    }
+</script>

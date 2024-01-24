@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,6 +58,7 @@ public class BoardController {
         return "/toto/main";
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/board/bid")
     public ResponseEntity<String> placeBid(@RequestBody BidDTO bidDTO){
         log.info("bid Post... : " + bidDTO);
@@ -86,6 +90,7 @@ public class BoardController {
         return BoardCategory.values();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/board/register")
     public String registerPost(@Valid BoardDTO boardDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
         log.info("board POST register .....");
@@ -107,7 +112,7 @@ public class BoardController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping({"/board/modify", "/board/read"})
+    @GetMapping({ "/board/read"})
     public void read(@RequestParam Long bno, Model model, PageRequestDTO pageRequestDTO, HttpServletRequest request){
         log.info("bno: " + bno);
 
@@ -115,16 +120,29 @@ public class BoardController {
         String referer = request.getHeader("Referer");
         session.setAttribute("prevPage", referer);
 
-        BoardDTO boardDTO = boardService.readOne(bno);
-        model.addAttribute("dto", boardDTO);
+        setBoardAndBookmark(bno, model);
+    }
+
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping({"/board/modify"})
+    public void getModify(@RequestParam Long bno, Model model, PageRequestDTO pageRequestDTO, HttpServletRequest request){
+        log.info("bno: " + bno);
 
         // 사용자의 아이디
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String mid = auth.getName();
 
-        //북마크 확인
-        boolean isBookMark = bookMarkService.existsByMemberAndBoard(mid,bno);
-        model.addAttribute("isBookMark", isBookMark);
+        // checkWriter 메소드를 직접 호출
+        if (!checkWriter(bno, mid)) {
+            throw new AccessDeniedException("Access is denied getModify");
+        }
+
+        HttpSession session = request.getSession();
+        String referer = request.getHeader("Referer");
+        session.setAttribute("prevPage", referer);
+
+        setBoardAndBookmark(bno, model);
     }
 
     @PreAuthorize("principal.username == #boardDTO.writer")
@@ -199,5 +217,23 @@ public class BoardController {
                 log.error("delete file error - " + e.getMessage());
             }
         }
+    }
+
+    private void setBoardAndBookmark(Long bno, Model model) {
+        BoardDTO boardDTO = boardService.readOne(bno);
+        log.info("BoardDTO TEST--------- " + boardDTO);
+        model.addAttribute("dto", boardDTO);
+
+        // 사용자의 아이디
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String mid = auth.getName();
+
+        //북마크 확인
+        boolean isBookMark = bookMarkService.existsByMemberAndBoard(mid,bno);
+        model.addAttribute("isBookMark", isBookMark);
+    }
+
+    public boolean checkWriter(Long bno, String username){
+        return boardService.checkWriter(bno, username);
     }
 }

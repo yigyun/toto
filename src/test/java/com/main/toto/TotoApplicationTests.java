@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 //@SpringBootTest
@@ -24,47 +25,64 @@ class TotoApplicationTests {
 
     static int[] array;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new java.io.InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
+    public static void main(String[] args) throws IOException{
 
-        array = new int[N+1];
-        for(int i = 0; i <= N; i++){
-            array[i] = i;
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        StringBuilder sb = new StringBuilder();
+        int V = Integer.parseInt(st.nextToken());
+        int E = Integer.parseInt(st.nextToken());
+        st = new StringTokenizer(br.readLine());
+        int S = Integer.parseInt(st.nextToken());
+
+        int[] result = new int[V+1];
+        ArrayList<int[]>[] list = new ArrayList[V+1];
+
+        // 초기화
+        for(int i = 0; i <= V; i++) list[i] = new ArrayList<>();
+        for(int i = 0; i <= V; i++) result[i] = Integer.MAX_VALUE;
+        result[S] = 0;
+
+        // 인접 리스트
+        for(int i = 0; i < E; i++){
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            int w = Integer.parseInt(st.nextToken());
+            list[u].add(new int[]{v, w});
         }
 
-        for(int i = 0; i < M; i++){
-            st = new StringTokenizer(br.readLine());
-            int c = Integer.parseInt(st.nextToken());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            if(c == 0){
-                union(a, b);
-            } else{
-                int num1 = find(a);
-                int num2 = find(b);
-                if(num1==num2) System.out.println("YES");
-                else System.out.println("NO");
+        // 다익스트라
+
+        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[1] - o2[1]);
+        pq.offer(new int[]{S, 0});
+
+        while(!pq.isEmpty()){
+            int[] current = pq.poll();
+            int node = current[0];
+            int weight = current[1];
+
+            if(result[node] < weight) continue;
+
+            for(int[] edge : list[node]){
+                int next = edge[0];
+                int nextWeight = edge[1] + weight;
+
+                if(nextWeight < result[next]){
+                    result[next] = nextWeight;
+                    pq.offer(new int[]{next, nextWeight});
+                }
             }
         }
-    }
 
-    static int find(int a){
-        if(a == array[a])
-            return a;
-        else
-            return array[a] = find(array[a]);
-    }
-
-    static void union(int a, int b){
-        int k = find(a);
-        int l = find(b);
-        if(k != l) {
-            if(k <= l) array[l] = k;
-            else array[k] = l;
+        for(int i = 1; i <= V; i++){
+            if(i  == S) sb.append(0).append("\n");
+            else if(result[i] == Integer.MAX_VALUE) sb.append("INF").append("\n");
+            else sb.append(result[i]).append("\n");
         }
+
+        System.out.println(sb.toString());
     }
+
 
 }

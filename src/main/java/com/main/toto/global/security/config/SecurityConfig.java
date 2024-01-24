@@ -1,5 +1,6 @@
 package com.main.toto.global.security.config;
 
+import com.main.toto.global.security.handler.Custom401Handler;
 import com.main.toto.global.security.handler.Custom403Handler;
 import com.main.toto.global.security.handler.TotoLoginSuccessHandler;
 import com.main.toto.global.security.handler.TotoSocialLoginSuccessHandler;
@@ -14,8 +15,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -42,6 +45,7 @@ public class SecurityConfig {
         http.csrf().disable();
         http.formLogin((form) -> form.loginPage("/toto/member/login")
                 .successHandler(authenticationSuccessHandlerForm())
+                .failureHandler(authenticationFailureHandler())
                 .permitAll());
 
         http.logout((logout) -> logout.logoutUrl("/toto/member/logout")
@@ -102,6 +106,11 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler(){
         return new TotoSocialLoginSuccessHandler(passwordEncoder());
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler(){
+        return new Custom401Handler();
     }
 
     @Bean

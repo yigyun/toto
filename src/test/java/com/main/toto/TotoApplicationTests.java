@@ -2,6 +2,8 @@ package com.main.toto;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -83,6 +85,5 @@ class TotoApplicationTests {
 
         System.out.println(sb.toString());
     }
-
 
 }

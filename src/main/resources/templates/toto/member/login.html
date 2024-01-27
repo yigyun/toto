@@ -130,6 +130,9 @@
                 case 'ACCESS_DENIED':
                     alert('로그인을 진행해야 합니다.')
                     break;
+                case 'SESSION_EXCEPTION':
+                    alert('이미 로그인한 사용자가 있습니다.');
+                    break;
             }
         }
     }

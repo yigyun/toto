@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -25,13 +26,16 @@ public class BookMarkServiceImpl  implements BookMarkService{
 
     @Override
     public void addBookMark(Long bno, String mid) {
+
+        if(bno == null || bno < 0 || mid == null) throw new IllegalArgumentException("잘못된 요청입니다.");
+
         // Member 엔티티를 찾습니다.
         Member member = memberRepository.findById(mid)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found: " + mid));
+                .orElseThrow(() -> new EntityNotFoundException("Member not found: " + mid));
 
         // Board 엔티티를 찾습니다.
         Board board = boardRepository.findById(bno)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found: " + bno));
+                .orElseThrow(() -> new EntityNotFoundException("Board not found: " + bno));
 
         // 새 BookMark 엔티티를 생성합니다.
         BookMark bookMark = BookMark.builder()
@@ -49,12 +53,17 @@ public class BookMarkServiceImpl  implements BookMarkService{
 
     @Override
     public void deleteBookMark(Long bno, String mid) {
-        // Member 엔티티를 찾습니다.
-        Member member = memberRepository.findById(mid).orElseThrow();
-        // Board 엔티티를 찾습니다.
-        Board board = boardRepository.findById(bno).orElseThrow();
 
-        BookMark bookMark = bookMarkRepository.findByMemberAndBoard(member, board).orElseThrow();
+        if(bno == null || bno < 0 || mid == null) throw new IllegalArgumentException("잘못된 요청입니다.");
+
+        // Member 엔티티를 찾습니다.
+        Member member = memberRepository.findById(mid).orElseThrow(() -> new EntityNotFoundException("Member not found: " + mid));
+        // Board 엔티티를 찾습니다.
+        Board board = boardRepository.findById(bno).orElseThrow(() -> new EntityNotFoundException("Board not found: " + bno));
+
+        BookMark bookMark = bookMarkRepository.findByMemberAndBoard(member, board).orElseThrow(
+                () -> new EntityNotFoundException("BookMark not found: " + mid + ", " + bno)
+        );
 
         board.removeBookMark(bookMark);
         member.removeBookmark(bookMark);
@@ -63,18 +72,24 @@ public class BookMarkServiceImpl  implements BookMarkService{
 
     @Override
     public List<BookMark> getBookMarkList(String mid) {
+        if(mid == null) throw new IllegalArgumentException("잘못된 요청입니다.");
         return bookMarkRepository.findByMember_Mid(mid);
     }
 
     @Override
     public boolean existsByMemberAndBoard(String mid, Long bno) {
 
+        if(bno == null || bno < 0 || mid == null) throw new IllegalArgumentException("잘못된 요청입니다.");
+
+
         Member member = memberRepository.findById(mid)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found: " + mid));
+                .orElseThrow(() -> new EntityNotFoundException("Member not found: " + mid));
 
         Board board = boardRepository.findById(bno)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found: " + bno));
+                .orElseThrow(() -> new EntityNotFoundException("Board not found: " + bno));
 
         return bookMarkRepository.existsByMemberAndBoard(member, board);
     }
+
+
 }

@@ -62,12 +62,7 @@ public class MemberController {
             return "toto/member/join";
         }
 
-        try{
-            memberService.join(memberJoinDTO);
-        } catch (MemberService.MidExistException e){
-            redirectAttributes.addFlashAttribute("error", "mid");
-            return "redirect:/toto/member/join";
-        }
+        memberService.join(memberJoinDTO);
 
         redirectAttributes.addFlashAttribute("result", "success");
 

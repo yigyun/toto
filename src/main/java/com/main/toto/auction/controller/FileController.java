@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,13 +56,12 @@ public class FileController {
                     multipartFile.transferTo(savePath);
 
                     if(Files.probeContentType(savePath).startsWith("image")){
-
                         image = true;
                         File thumbFile = new File(uploadPath, "s_"+uuid+"_"+originalName);
                         Thumbnailator.createThumbnail(savePath.toFile(), thumbFile, 200, 200);
                     }
                 } catch (IOException e ){
-                    e.printStackTrace();
+                    throw new CustomIOException("파일 저장에 실패했습니다", e);
                 }
 
                 list.add(UploadResultDTO
@@ -85,8 +85,13 @@ public class FileController {
 
         log.info("fileName: " + fileName);
 
-        Resource resource = new FileSystemResource(uploadPath + File.separator + fileName);
-        String resourceName = resource.getFilename();
+        Resource resource;
+        try {
+            resource = new FileSystemResource(uploadPath + File.separator + fileName);
+            String resourceName = resource.getFilename();
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("유효하지 않은 파일 경로입니다.", e);
+        }
         HttpHeaders headers = new HttpHeaders();
 
         try{
@@ -103,9 +108,14 @@ public class FileController {
     public Map<String, Boolean> removeFile(@PathVariable String fileName){
 
         log.info("remove 파일: fileName = " + fileName);
-        Resource resource = new FileSystemResource(uploadPath + File.separator + fileName);
+        Resource resource;
 
-        String resourceName = resource.getFilename();
+        try {
+            resource = new FileSystemResource(uploadPath + File.separator + fileName);
+            String resourceName = resource.getFilename();
+        } catch (IllegalArgumentException e){
+            throw new IllegalArgumentException("유효하지 않은 파일 경로입니다.");
+        }
 
         Map<String, Boolean> resultMap = new HashMap<>();
         boolean removed = false;
@@ -130,4 +140,23 @@ public class FileController {
         return resultMap;
     }
 
+    // 500 코드 처리
+    @ExceptionHandler(CustomIOException.class)
+    public ResponseEntity<String> handleCustomIOException(CustomIOException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("파일 저장에 실패했습니다.");
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        // Log the exception
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("유효하지 않은 파일 경로입니다.");
+    }
+
+    private class CustomIOException extends RuntimeException {
+        public CustomIOException(String message, IOException e) {
+            super(message, e);
+        }
+    }
 }

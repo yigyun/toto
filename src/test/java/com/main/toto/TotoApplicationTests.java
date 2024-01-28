@@ -31,59 +31,16 @@ class TotoApplicationTests {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        StringBuilder sb = new StringBuilder();
-        int V = Integer.parseInt(st.nextToken());
-        int E = Integer.parseInt(st.nextToken());
-        st = new StringTokenizer(br.readLine());
-        int S = Integer.parseInt(st.nextToken());
 
-        int[] result = new int[V+1];
-        ArrayList<int[]>[] list = new ArrayList[V+1];
+        int N = Integer.parseInt(st.nextToken());
+        array = new int[N+1];
+        array[1] = 0;
 
-        // 초기화
-        for(int i = 0; i <= V; i++) list[i] = new ArrayList<>();
-        for(int i = 0; i <= V; i++) result[i] = Integer.MAX_VALUE;
-        result[S] = 0;
-
-        // 인접 리스트
-        for(int i = 0; i < E; i++){
-            st = new StringTokenizer(br.readLine());
-            int u = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
-            int w = Integer.parseInt(st.nextToken());
-            list[u].add(new int[]{v, w});
+        for(int i = 2; i <= N; i++){
+            array[i] = array[i-1] + 1;
+            if(i % 2 == 0) array[i] = Math.min(array[i], array[i/2] + 1);
+            if(i % 3 == 0) array[i] = Math.min(array[i], array[i/3] + 1);
         }
-
-        // 다익스트라
-
-        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[1] - o2[1]);
-        pq.offer(new int[]{S, 0});
-
-        while(!pq.isEmpty()){
-            int[] current = pq.poll();
-            int node = current[0];
-            int weight = current[1];
-
-            if(result[node] < weight) continue;
-
-            for(int[] edge : list[node]){
-                int next = edge[0];
-                int nextWeight = edge[1] + weight;
-
-                if(nextWeight < result[next]){
-                    result[next] = nextWeight;
-                    pq.offer(new int[]{next, nextWeight});
-                }
-            }
-        }
-
-        for(int i = 1; i <= V; i++){
-            if(i  == S) sb.append(0).append("\n");
-            else if(result[i] == Integer.MAX_VALUE) sb.append("INF").append("\n");
-            else sb.append(result[i]).append("\n");
-        }
-
-        System.out.println(sb.toString());
+        System.out.println(array[N]);
     }
-
 }

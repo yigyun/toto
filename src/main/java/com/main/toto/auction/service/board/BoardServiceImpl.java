@@ -14,8 +14,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +24,16 @@ import java.util.List;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
-    private final BookMarkService bookMarkService;
-    private final ModelMapper modelMapper;
 
     @Override
+    @Transactional
     public Long register(BoardDTO boardDTO) {
+
+        if(boardDTO == null) throw new IllegalArgumentException("게시글 정보가 없습니다.");
 
         Board board = dtoToEntity(boardDTO);
 
@@ -40,17 +42,30 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public LocalDateTime readDate(Long bno) {
-        return boardRepository.findById(bno).orElseThrow().getRegDate();
+        return boardRepository.findById(bno).orElseThrow(
+                () -> new EntityNotFoundException("해당 게시글이 없습니다.")
+        ).getRegDate();
     }
 
     @Override
     public BoardDTO readOne(Long bno) {
-        return entityToDTO(boardRepository.findByIdWithImages(bno).orElseThrow());
+        return entityToDTO(boardRepository.findByIdWithImages(bno).orElseThrow(
+                () -> new EntityNotFoundException("해당 게시글이 없습니다.")
+        ));
     }
 
     @Override
+    @Transactional
     public void modify(BoardDTO boardDTO) {
-        Board board = boardRepository.findById(boardDTO.getBno()).orElseThrow();
+
+        if(boardDTO == null) throw new IllegalArgumentException("게시글 정보가 없습니다.");
+
+        Board board = boardRepository.findById(boardDTO.getBno()).orElseThrow(
+                () -> new EntityNotFoundException("해당 게시글이 없습니다.")
+        );
+
+        if(boardDTO.getTitle().trim() == null || boardDTO.getContent().trim() == null) throw new IllegalArgumentException("제목 또는 내용이 없습니다.");
+
         // 제목, 내용 수정
         board.change(boardDTO.getTitle(), boardDTO.getContent());
         // 이미지 수정
@@ -65,7 +80,9 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
+    @Transactional
     public void remove(Long bno) {
+        if(!boardRepository.existsById(bno)) throw new EntityNotFoundException("해당 게시글이 없습니다.");
         boardRepository.deleteById(bno);
     }
 
@@ -81,6 +98,8 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public PageResponseDTO<BoardListAllDTO> listWithAll(PageRequestDTO pageRequestDTO) {
+
+        if(pageRequestDTO == null) throw new IllegalArgumentException("요청이 없습니다.");
 
         String keyword = pageRequestDTO.getKeyword();
         BoardCategory boardCategory = pageRequestDTO.getBoardCategory();
@@ -101,6 +120,8 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public PageResponseDTO<BoardListAllDTO> listWithBookMark(PageRequestDTO pageRequestDTO, String mid) {
 
+        if(mid == null || pageRequestDTO == null) throw new IllegalArgumentException("회원 정보 또는 요청이 없습니다.");
+
         Pageable pageable = pageRequestDTO.getPageable("bno");
 
         Page<BoardListAllDTO> result = boardRepository.searchWithBookMark(mid, pageable);
@@ -114,6 +135,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public boolean checkWriter(Long bno, String mid) {
+        if(bno == null || mid == null) throw new IllegalArgumentException("게시글 번호 또는 아이디 정보가 없습니다.");
         BoardDTO boardDTO = readOne(bno);
         return mid.equals(boardDTO.getWriter());
     }

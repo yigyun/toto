@@ -1,5 +1,6 @@
 package com.main.toto.member.dto.member;
 
+import com.main.toto.member.dto.member.UniqueMid.UniqueMid;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -10,9 +11,9 @@ import javax.validation.constraints.Size;
 @Data
 public class MemberJoinDTO {
 
-
     @NotBlank(message = "아이디를 입력하세요.")
     @Size(min = 4, message = "4자리 이상 입력하세요.")
+    @UniqueMid
     private String mid;
 
     @NotEmpty(message = "비밀번호를 입력하세요.")

@@ -9,6 +9,7 @@ import com.main.toto.member.entity.member.Member;
 import com.main.toto.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,23 +44,25 @@ public class AuctionServiceImpl implements AuctionService{
 
     @Override
     public Long createBid(BidDTO bidDTO) {
+            try {
+                Board board = boardRepository.findWithLockByBno(bidDTO.getBno()).orElseThrow(
+                        () -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + bidDTO.getBno()));
+                Member member = memberRepository.findById(bidDTO.getMid()).orElseThrow(
+                        () -> new IllegalArgumentException("해당 회원이 없습니다. id=" + bidDTO.getMid()));
 
-        Board board = boardRepository.findWithLockByBno(bidDTO.getBno()).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + bidDTO.getBno()));
-
-        Member member = memberRepository.findById(bidDTO.getMid()).orElseThrow(
-                () -> new IllegalArgumentException("해당 회원이 없습니다. id=" + bidDTO.getMid()));
-
-        if(board.getPrice() < bidDTO.getPrice()){
-            board.changePrice(bidDTO.getPrice());
-            Bid bid = dtoToEntity(bidDTO);
-            bid.addBoard(board);
-            bid.addMember(member);
-            bidRepository.save(bid);
-            return bid.getBidId();
-        }else{
-            throw new IllegalArgumentException("입찰 금액이 현재 가격보다 낮습니다.");
-        }
+                if(board.getPrice() < bidDTO.getPrice()){
+                    board.changePrice(bidDTO.getPrice());
+                    Bid bid = dtoToEntity(bidDTO);
+                    bid.addBoard(board);
+                    bid.addMember(member);
+                    bidRepository.save(bid);
+                    return bid.getBidId();
+                }else{
+                    throw new IllegalArgumentException("입찰 금액이 현재 가격보다 낮습니다.");
+                }
+            } catch (OptimisticLockingFailureException e) {
+                throw new IllegalArgumentException("다른 사용자가 이미 입찰하였습니다. 다시 시도해주세요.");
+            }
     }
 
     @Override
@@ -76,7 +79,6 @@ public class AuctionServiceImpl implements AuctionService{
 
     @Override
     public BidDTO updateBid(BidDTO bidDTO) {
-
         Bid bid = bidRepository.findWithLockByMember_MidAndBoard_Bno(bidDTO.getMid(), bidDTO.getBno()).orElseThrow();
         bid.changePrice(bidDTO.getPrice());
         return entityToDTO(bid);

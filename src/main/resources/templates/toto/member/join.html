@@ -89,7 +89,7 @@
             <div class="col-md-6">
               <label for="mid" class="form-label">아이디</label>
               <input type="text" class="form-control" th:field="*{mid}" name="mid" id="mid" placeholder="">
-              <p th:if="${#fields.hasErrors('mid')}" th:errors="*{mid}">ERROR</p>
+              <p th:if="${#fields.hasErrors('mid')}" th:errors="*{mid}"></p>
             </div>
 
             <div class="col-md-6">

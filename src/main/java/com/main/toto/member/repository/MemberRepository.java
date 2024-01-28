@@ -20,7 +20,6 @@ public interface MemberRepository extends JpaRepository<Member, String>{
     Optional<Member> getWithRoles(@Param("mid") String mid);
 
     @Modifying
-    @Transactional
     @Query("update Member m set m.mpassword =:mpassword where m.mid = :mid ")
     void updatePassword(@Param("mpassword") String password, @Param("mid") String mid);
 }

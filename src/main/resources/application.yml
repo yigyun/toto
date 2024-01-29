@@ -1,6 +1,9 @@
 
 
 spring:
+  profiles:
+    active: test
+
   batch:
     jdbc:
       initialize-schema: always

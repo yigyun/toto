@@ -45,11 +45,11 @@ public class Custom403Handler implements AccessDeniedHandler {
             if(message.equals("Access is denied getModify")){
                 response.sendRedirect("/toto/main" + "?errors=NO_MODIFY_AUTHORITY");
             }else if ("/toto/board/modify".equals(requestURI)) {
-                response.sendRedirect("/toto/member/login?error=NO_MODIFY_PERMISSION");
+                response.sendRedirect("/toto/member/login?errors=NO_MODIFY_PERMISSION");
             } else if ("/toto/board/read".equals(requestURI)) {
-                response.sendRedirect("/toto/member/login?error=NO_READ_PERMISSION");
+                response.sendRedirect("/toto/member/login?errors=NO_READ_PERMISSION");
             } else {
-                response.sendRedirect("/toto/member/login?error=ACCESS_DENIED");
+                response.sendRedirect("/toto/member/login?errors=ACCESS_DENIED");
             }
         }
     }

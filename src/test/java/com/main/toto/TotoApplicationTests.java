@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
 
-//@SpringBootTest
+@SpringBootTest
 class TotoApplicationTests {
 
     @Test
@@ -25,22 +25,22 @@ class TotoApplicationTests {
      */
 
 
-    static int[] array;
-
-    public static void main(String[] args) throws IOException{
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-
-        int N = Integer.parseInt(st.nextToken());
-        array = new int[N+1];
-        array[1] = 0;
-
-        for(int i = 2; i <= N; i++){
-            array[i] = array[i-1] + 1;
-            if(i % 2 == 0) array[i] = Math.min(array[i], array[i/2] + 1);
-            if(i % 3 == 0) array[i] = Math.min(array[i], array[i/3] + 1);
-        }
-        System.out.println(array[N]);
-    }
+//    static int[] array;
+//
+//    public static void main(String[] args) throws IOException{
+//
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        StringTokenizer st = new StringTokenizer(br.readLine());
+//
+//        int N = Integer.parseInt(st.nextToken());
+//        array = new int[N+1];
+//        array[1] = 0;
+//
+//        for(int i = 2; i <= N; i++){
+//            array[i] = array[i-1] + 1;
+//            if(i % 2 == 0) array[i] = Math.min(array[i], array[i/2] + 1);
+//            if(i % 3 == 0) array[i] = Math.min(array[i], array[i/3] + 1);
+//        }
+//        System.out.println(array[N]);
+//    }
 }

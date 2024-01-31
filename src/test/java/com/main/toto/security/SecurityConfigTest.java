@@ -1,10 +1,5 @@
 package com.main.toto.security;
 
-
-import com.main.toto.auction.controller.BoardController;
-import com.main.toto.auction.service.auction.AuctionServiceImpl;
-import com.main.toto.auction.service.board.BoardService;
-import com.main.toto.bookMark.service.BookMarkService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +9,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
@@ -115,5 +106,25 @@ public class SecurityConfigTest {
     @Test
     public void testSessionLoginLimit() throws Exception{
 
+        //given
+        String username = "test";
+        String password = "test";
+        //when
+        ResultActions resultActions = mvc.perform(post("/toto/member/login")
+                .param("username", username)
+                .param("password", password));
+
+        int httpStatus1 = resultActions.andReturn().getResponse().getStatus();
+
+        ResultActions resultActions2 = mvc.perform(post("/toto/member/login")
+                .param("username", username)
+                .param("password", password));
+        String redirectUrl = resultActions2.andReturn().getResponse().getRedirectedUrl();
+        int httpStatus2 = resultActions.andReturn().getResponse().getStatus();
+
+        //then
+        assertThat(httpStatus1).isEqualTo(302);
+        assertThat(httpStatus2).isEqualTo(302);
+        assertThat(redirectUrl).contains("errors=SESSION_EXCEPTION");
     }
 }

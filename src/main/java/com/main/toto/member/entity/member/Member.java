@@ -4,6 +4,7 @@ import com.main.toto.auction.entity.bid.Bid;
 import com.main.toto.bookMark.entity.bookMark.BookMark;
 import com.main.toto.global.domain.BaseEntity;
 import lombok.*;
+import lombok.extern.log4j.Log4j2;
 
 import javax.persistence.*;
 import java.util.Collections;
@@ -14,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"roleSet","bookMarks"})
+@ToString(exclude = {"roleSet","bookMarks","bids"})
 @Getter
 public class Member extends BaseEntity {
 
@@ -54,9 +55,11 @@ public class Member extends BaseEntity {
             this.roleSet.add(memberRole);
         }
 
+        @Builder.Default
         @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
         private Set<BookMark> bookMarks = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
+        @Builder.Default
         @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
         private Set<Bid> bids = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
@@ -65,9 +68,13 @@ public class Member extends BaseEntity {
                 this.roleSet.clear();
             }
 
-
         public void addBookmark(BookMark bookMark) {
-            this.bookMarks.add(bookMark);
+            System.out.println("member: " + this);
+            System.out.println("bookMark.getMember(): " + bookMark.getMember());
+            System.out.println("bookMark.getBoard(): " + bookMark.getBoard());
+            if(bookMark != null) {
+                this.bookMarks.add(bookMark);
+            }
         }
 
         public void removeBookmark(BookMark bookMark) {

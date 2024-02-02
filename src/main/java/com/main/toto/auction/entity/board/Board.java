@@ -38,6 +38,7 @@ public class Board extends BaseEntity {
     // 후에 유저랑 연관관계 맺어서 관리해야함.
     private Long bookMarkCount = 1L;
 
+    @Builder.Default
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BookMark> bookMarks = new HashSet<>();
 

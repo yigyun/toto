@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 @Service
@@ -20,6 +21,7 @@ public class MemberServiceImpl implements MemberService{
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EntityManager entityManager;
 
     @Override
     @Transactional
@@ -43,5 +45,11 @@ public class MemberServiceImpl implements MemberService{
     public void changePw(String mpassword, String mid) {
         log.info("changePw............");
         memberRepository.updatePassword(mpassword, mid);
+    }
+
+    @Override
+    public void delete(String mid) {
+        log.info("delete............");
+        memberRepository.deleteById(mid);
     }
 }

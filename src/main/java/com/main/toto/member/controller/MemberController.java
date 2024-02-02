@@ -5,14 +5,13 @@ import com.main.toto.member.dto.member.MemberPwModifyDTO;
 import com.main.toto.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
@@ -26,13 +25,18 @@ public class MemberController {
     private final MemberService memberService;
 
 
+    //@AuthenticationPrincipal Principal principal
     @GetMapping("/login")
-    public String loginGET(String error, String logout, Principal principal){
+    public String loginGET(@RequestParam(name = "error", required = false) String error,
+                           @RequestParam(name = "logout", required = false) String logout,
+                           Authentication authentication){
         log.info("error: " + error);
         log.info("logout: " + logout);
-
-
-        if(principal != null) {
+//        if(principal != null) {
+//            //이미 로그인한 경우 메인 페이지로 리다이렉트 시킨다.
+//            return "redirect:/toto/main";
+//        }
+        if(authentication != null && authentication.isAuthenticated()) {
             //이미 로그인한 경우 메인 페이지로 리다이렉트 시킨다.
             return "redirect:/toto/main";
         }
@@ -80,14 +84,14 @@ public class MemberController {
     @PostMapping("/modify")
     public String pwModifyPOST(@Validated @ModelAttribute("pwModify") MemberPwModifyDTO memberPwModifyDTO,
                                BindingResult bindingResult, RedirectAttributes redirectAttributes
-                                , Principal principal){
+                                , Authentication authentication){
         log.info("pwModify post............");
         if(bindingResult.hasErrors()){
             log.info("bindingResult: " + bindingResult);
             return "toto/member/modify";
         }
 
-        String mid = principal.getName();
+        String mid = authentication.getName();
         memberService.changePw(memberPwModifyDTO.getMpassword(), mid);
 
         return "redirect:/toto/main";

@@ -37,18 +37,20 @@ public class BookMarkServiceImpl  implements BookMarkService{
         Board board = boardRepository.findById(bno)
                 .orElseThrow(() -> new EntityNotFoundException("Board not found: " + bno));
 
+        if(bookMarkRepository.existsByMemberAndBoard(member, board)) throw new IllegalArgumentException("이미 북마크가 존재합니다.");
+
         // 새 BookMark 엔티티를 생성합니다.
         BookMark bookMark = BookMark.builder()
                 .board(board)
                 .member(member)
                 .build();
 
-        // 생성한 BookMark 엔티티를 저장합니다.
-        bookMarkRepository.save(bookMark);
-
         // Member와 Board 엔티티에도 BookMark를 추가합니다.
         member.addBookmark(bookMark);
         board.addBookMark(bookMark);
+
+        // 생성한 BookMark 엔티티를 저장합니다.
+        bookMarkRepository.save(bookMark);
     }
 
     @Override

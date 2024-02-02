@@ -10,11 +10,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
+@Profile("dev")
 public class DataInitializer {
 
     private final MemberService memberService;

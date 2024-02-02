@@ -6,4 +6,6 @@ public interface MemberService {
     void join(MemberJoinDTO memberJoinDTO);
 
     void changePw(String mpassword, String mid);
+
+    void delete(String mid);
 }

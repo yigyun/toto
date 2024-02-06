@@ -27,7 +27,7 @@ public class BookMarkServiceImpl  implements BookMarkService{
     @Override
     public void addBookMark(Long bno, String mid) {
 
-        if(bno == null || bno < 0 || mid == null) throw new IllegalArgumentException("잘못된 요청입니다.");
+        if(bno == null || bno < 0 || mid == null) throw new IllegalArgumentException("Invalid request.");
 
         // Member 엔티티를 찾습니다.
         Member member = memberRepository.findById(mid)
@@ -37,7 +37,7 @@ public class BookMarkServiceImpl  implements BookMarkService{
         Board board = boardRepository.findById(bno)
                 .orElseThrow(() -> new EntityNotFoundException("Board not found: " + bno));
 
-        if(bookMarkRepository.existsByMemberAndBoard(member, board)) throw new IllegalArgumentException("이미 북마크가 존재합니다.");
+        if(bookMarkRepository.existsByMemberAndBoard(member, board)) throw new IllegalArgumentException("Existing BookMark.");
 
         // 새 BookMark 엔티티를 생성합니다.
         BookMark bookMark = BookMark.builder()
@@ -56,7 +56,7 @@ public class BookMarkServiceImpl  implements BookMarkService{
     @Override
     public void deleteBookMark(Long bno, String mid) {
 
-        if(bno == null || bno < 0 || mid == null) throw new IllegalArgumentException("잘못된 요청입니다.");
+        if(bno == null || bno < 0 || mid == null) throw new IllegalArgumentException("Invalid request.");
 
         // Member 엔티티를 찾습니다.
         Member member = memberRepository.findById(mid).orElseThrow(() -> new EntityNotFoundException("Member not found: " + mid));
@@ -74,14 +74,14 @@ public class BookMarkServiceImpl  implements BookMarkService{
 
     @Override
     public List<BookMark> getBookMarkList(String mid) {
-        if(mid == null) throw new IllegalArgumentException("잘못된 요청입니다.");
+        if(mid == null) throw new IllegalArgumentException("Invalid request.");
         return bookMarkRepository.findByMember_Mid(mid);
     }
 
     @Override
     public boolean existsByMemberAndBoard(String mid, Long bno) {
 
-        if(bno == null || bno < 0 || mid == null) throw new IllegalArgumentException("잘못된 요청입니다.");
+        if(bno == null || bno < 0 || mid == null) throw new IllegalArgumentException("Invalid request.");
 
 
         Member member = memberRepository.findById(mid)

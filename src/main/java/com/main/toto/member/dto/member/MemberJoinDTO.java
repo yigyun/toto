@@ -1,6 +1,7 @@
 package com.main.toto.member.dto.member;
 
 import com.main.toto.member.dto.member.UniqueMid.UniqueMid;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.Email;

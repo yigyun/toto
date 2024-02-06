@@ -87,3 +87,7 @@ sourceSets {
         }
     }
 }
+
+test {
+    systemProperty "file.encoding", "UTF-8"
+}

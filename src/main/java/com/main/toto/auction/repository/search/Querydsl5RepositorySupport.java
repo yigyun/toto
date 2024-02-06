@@ -49,6 +49,7 @@ public abstract class Querydsl5RepositorySupport {
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
+
     @PostConstruct
     public void validate(){
         Assert.notNull(entityManager, "EntityManager must not be null !");

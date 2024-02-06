@@ -49,9 +49,9 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public BoardDTO readOne(Long bno) {
-        return entityToDTO(boardRepository.findByIdWithImages(bno).orElseThrow(
-                () -> new EntityNotFoundException("해당 게시글이 없습니다.")
-        ));
+         Board board = boardRepository.findByIdWithImages(bno).orElse(null);
+        if(board == null) throw new EntityNotFoundException("해당 게시글이 없습니다.");
+        return entityToDTO(board);
     }
 
     @Override
@@ -64,8 +64,7 @@ public class BoardServiceImpl implements BoardService{
                 () -> new EntityNotFoundException("해당 게시글이 없습니다.")
         );
 
-        if(boardDTO.getTitle().trim() == null || boardDTO.getContent().trim() == null) throw new IllegalArgumentException("제목 또는 내용이 없습니다.");
-
+        if(boardDTO.getTitle() == null || boardDTO.getTitle().trim().isEmpty() || boardDTO.getContent() == null || boardDTO.getContent().trim().isEmpty()) throw new IllegalArgumentException("제목 또는 내용이 없습니다.");
         // 제목, 내용 수정
         board.change(boardDTO.getTitle(), boardDTO.getContent());
         // 이미지 수정
@@ -91,7 +90,11 @@ public class BoardServiceImpl implements BoardService{
         List<BoardDTO> dtoList = new ArrayList<>();
 
         for(BoardCategory boardCategory : BoardCategory.values()){
-            dtoList.add(entityToDTO(boardRepository.findTopByBoardCategoryOrderByBookMarkCountDesc(boardCategory).orElseThrow()));
+            Board board = boardRepository.findTopByBoardCategoryOrderByBookMarkCountDesc(boardCategory).orElse(null);
+            if(board != null){
+                BoardDTO boardDTO = (entityToDTO(board));
+                dtoList.add(boardDTO);
+            }
         }
         return dtoList;
     }

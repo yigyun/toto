@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -67,9 +68,11 @@ public class AuctionServiceImpl implements AuctionService{
 
     @Override
     public BidDTO getBid(Long bidId) {
-        return bidRepository.findById(bidId)
-                .map(this::entityToDTO)
-                .orElse(null);
+        Optional<Bid> optionalBid = bidRepository.findById(bidId);
+        if(optionalBid.isPresent()) {
+            return entityToDTO(optionalBid.get());
+        }
+        return null;
     }
 
     @Override
@@ -79,8 +82,11 @@ public class AuctionServiceImpl implements AuctionService{
 
     @Override
     public BidDTO updateBid(BidDTO bidDTO) {
-        Bid bid = bidRepository.findWithLockByMember_MidAndBoard_Bno(bidDTO.getMid(), bidDTO.getBno()).orElseThrow();
-        bid.changePrice(bidDTO.getPrice());
-        return entityToDTO(bid);
+        Optional<Bid> bid = bidRepository.findWithLockByMember_MidAndBoard_Bno(bidDTO.getMid(), bidDTO.getBno());
+        if(bid.isPresent()){
+            Bid entity = bid.get();
+            entity.changePrice(bidDTO.getPrice());
+            return  entityToDTO(entity);
+        }else throw new IllegalArgumentException("해당 입찰이 없습니다.");
     }
 }

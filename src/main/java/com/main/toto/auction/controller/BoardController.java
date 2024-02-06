@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,23 +59,8 @@ public class BoardController {
         return "/toto/main";
     }
 
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("/board/bid")
-    public ResponseEntity<String> placeBid(@RequestBody BidDTO bidDTO){
-        log.info("bid Post... : " + bidDTO);
-
-        if(auctionService.getBid(bidDTO.getBno()) != null){
-            auctionService.updateBid(bidDTO);
-            return ResponseEntity.ok("success update");
-        }else{
-            auctionService.createBid(bidDTO);
-            return ResponseEntity.ok("success create");
-        }
-    }
-
     @GetMapping("/board/list")
     public void list(PageRequestDTO pageRequestDTO, Model model){
-
         log.info("board list GET....");
         PageResponseDTO<BoardListAllDTO> responseDTO =
                 boardService.listWithAll(pageRequestDTO);
@@ -113,7 +99,7 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping({ "/board/read"})
-    public void read(@RequestParam Long bno, Model model, PageRequestDTO pageRequestDTO, HttpServletRequest request){
+    public void read(@RequestParam("bno") Long bno, Model model, PageRequestDTO pageRequestDTO, HttpServletRequest request){
         log.info("bno: " + bno);
 
         HttpSession session = request.getSession();
@@ -126,17 +112,10 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping({"/board/modify"})
-    public void getModify(@RequestParam Long bno, Model model, PageRequestDTO pageRequestDTO, HttpServletRequest request){
+    public void getModify(@RequestParam("bno") Long bno, Model model, PageRequestDTO pageRequestDTO, HttpServletRequest request){
         log.info("bno: " + bno);
 
-        // 사용자의 아이디
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String mid = auth.getName();
-
-        // checkWriter 메소드를 직접 호출
-        if (!checkWriter(bno, mid)) {
-            throw new AccessDeniedException("Access is denied getModify");
-        }
+        extracted(bno);
 
         HttpSession session = request.getSession();
         String referer = request.getHeader("Referer");
@@ -145,13 +124,16 @@ public class BoardController {
         setBoardAndBookmark(bno, model);
     }
 
-    @PreAuthorize("principal.username == #boardDTO.writer")
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/board/modify")
     public String modify(@Validated BoardDTO boardDTO,
                          PageRequestDTO pageRequestDTO,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes){
         log.info("board POST modify ....." + boardDTO);
+
+        // 사용자의 아이디
+        extracted(boardDTO.getBno());
 
         if(bindingResult.hasErrors()){
             log.info("has errors.......");
@@ -172,13 +154,13 @@ public class BoardController {
         return "redirect:/toto/board/read";
     }
 
-    @PreAuthorize("principal.username == #boardDTO.writer")
+    // tip: isAuthenticated만 쓰는 이유 : 테스트에서 == #board.writer 같은 것 적용이 매우 어렵.
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/board/remove")
     public String remove(BoardDTO boardDTO, RedirectAttributes redirectAttributes){
-
         Long bno = boardDTO.getBno();
         log.info("remove post... " + bno);
-
+        extracted(bno);
         boardService.remove(bno);
 
         log.info(boardDTO.getFileNames());
@@ -219,9 +201,11 @@ public class BoardController {
         }
     }
 
-    private void setBoardAndBookmark(Long bno, Model model) {
+    protected void setBoardAndBookmark(Long bno, Model model) {
         BoardDTO boardDTO = boardService.readOne(bno);
-        log.info("BoardDTO TEST--------- " + boardDTO);
+        if (boardDTO == null) {
+            throw new EntityNotFoundException("Board not found with bno: " + bno);
+        }
         model.addAttribute("dto", boardDTO);
 
         // 사용자의 아이디
@@ -235,6 +219,21 @@ public class BoardController {
 
     public boolean checkWriter(Long bno, String username){
         return boardService.checkWriter(bno, username);
+    }
+
+    private void extracted(Long bno) {
+        // 사용자의 아이디
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            // 로그인되지 않은 사용자에 대한 처리
+            throw new IllegalArgumentException("User is not authenticated");
+        }
+        String mid = auth.getName();
+
+        // checkWriter 메소드를 직접 호출
+        if (!checkWriter(bno, mid)) {
+            throw new AccessDeniedException("Access_is_denied_getModify");
+        }
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

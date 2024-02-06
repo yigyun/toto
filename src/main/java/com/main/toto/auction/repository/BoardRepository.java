@@ -31,7 +31,7 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardSearch
 
     @EntityGraph(attributePaths = {"imageSet"})
     @Query("SELECT b FROM Board b WHERE b.boardCategory = :boardCategory")
-    Optional<Board> findByBoardCategory(@Param("boardCategory") BoardCategory boardCategory);
+    List<Board> findByBoardCategory(@Param("boardCategory") BoardCategory boardCategory);
 
 
     List<Board> findAllByRegDateBefore(LocalDateTime threshold);

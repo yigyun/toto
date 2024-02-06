@@ -31,9 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class MemberControllerTest extends ControllerTestConfig {
 
-    @Autowired
-    private EntityManager testEntityManager;
-
     @AfterEach
     void setUp() {
 //        testEntityManager.clear();
@@ -43,9 +40,6 @@ class MemberControllerTest extends ControllerTestConfig {
     @DisplayName("로그인 페이지 요청시 로그인 페이지를 반환한다.")
     @Test
     void loginGET_WhenPrincipalIsNull_ReturnsLoginView() throws Exception{
-
-        SecurityContextHolder.clearContext();
-
         mvc.perform(get("/toto/member/login")
                         .param(("error"), "error")
                         .param("logout", "logout")

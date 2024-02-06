@@ -15,7 +15,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +30,8 @@ import static com.main.toto.auction.entity.board.QBoard.*;
  */
 
 @Log4j2
+@Repository
 public class BoardSearchImpl extends Querydsl5RepositorySupport implements BoardSearch{
-
 
         private final BookMarkRepository bookMarkRepository;
 
@@ -197,14 +199,16 @@ public class BoardSearchImpl extends Querydsl5RepositorySupport implements Board
 
     @Override
     public Page<BoardListAllDTO> searchWithCategory(BoardCategory boardCategory, Pageable pageable) {
+        if(boardCategory == null) {
+            return null;
+        }
+
         QBoard board = QBoard.board;
 
         JPAQuery<Board> boardJPAQuery = selectFrom(board);
-        if((boardCategory != null) ){
             BooleanBuilder booleanBuilder = new BooleanBuilder();
             booleanBuilder.and(board.boardCategory.eq(boardCategory));
             boardJPAQuery.where(booleanBuilder);
-        }
 
 
         getQuerydsl().applyPagination(pageable, boardJPAQuery);
@@ -265,6 +269,4 @@ public class BoardSearchImpl extends Querydsl5RepositorySupport implements Board
 
             return new PageImpl<>(boardList, pageable, totalCount);
         }
-
-
     }

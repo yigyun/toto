@@ -9,15 +9,29 @@ spring:
       initialize-schema: always
 
   datasource:
-    url: jdbc:h2:tcp://localhost/~/test
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://localhost:3306/totomarket?useSSL=false&serverTimezone=UTC
+    username: totomarketAdmin
+    password: 1qaz@wsx3edc$rfv
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        format_sql: true
+        use_sql_comments: true # JPQL 쿼리 로그 남기기
+#
+#  datasource:
+#    url: jdbc:h2:tcp://localhost/~/test
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password:
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+#    properties:
+#      hibernate:
 #        format_sql: true
 #        use_sql_comments: true # JPQL 쿼리 로그 남기기
 

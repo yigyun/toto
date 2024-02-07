@@ -8,6 +8,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
+@ActiveProfiles("test")
 class BookMarkControllerTest extends ControllerTestConfig {
 
     @SpyBean

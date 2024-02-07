@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,6 +20,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Log4j2
+@ActiveProfiles("test")
 class BoardRepositoryTest {
 
     @PersistenceContext

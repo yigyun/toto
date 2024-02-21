@@ -39,5 +39,5 @@ out/
 ###
 resources/
 
-/src/main/resources/application-security.yml
+application-security.yml
 Dockerfile

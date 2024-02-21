@@ -24,49 +24,44 @@ class TotoApplicationTests {
      * 입력받고, 개수로 자르면서 검증
      * 줄이는 방법: 연산 값을 들고 있으면 됨.
      */
-
-    static boolean[] visited;
-    static ArrayList[] list;
-
-    static int count = 0;
-
-    public static void main(String[] args) throws IOException{
-
+    static int[] indegree;
+    static ArrayList<Integer>[] list;
+    static ArrayList<Integer> result;
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        StringBuilder sb = new StringBuilder();
-
         int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(br.readLine());
-        list = new ArrayList[N+1];
-        visited = new boolean[N+1];
-
-        for(int i = 0; i < N+1; i++){
+        int M = Integer.parseInt(st.nextToken());
+        list = new ArrayList[N + 1];
+        for (int i = 1; i <= N; i++) {
             list[i] = new ArrayList<>();
         }
-
-        for(int i = 0; i < M; i++){
+        result = new ArrayList<>();
+        indegree = new int[N + 1];
+        for(int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
             list[a].add(b);
-            list[b].add(a);
+            indegree[b]++;
         }
-       visited[1] = true;
-       dfs(1);
 
-        System.out.println(count);
-    }
+        PriorityQueue<Integer> que = new PriorityQueue<>();
+        for (int i = 1; i <= N; i++) {
+            if (indegree[i] == 0) {
+                que.add(i);
+            }
+        }
 
-    static void dfs(int node){
-        for(int i =0; i < list[node].size(); i++){
-            int temp =  (int)list[node].get(i);
-            if(!visited[temp]){
-                visited[temp] = true;
-                dfs(temp);
-                count++;
+        while(!que.isEmpty()){
+            int cur = que.poll();
+            System.out.print(cur + " ");
+            for(int next : list[cur]){
+                indegree[next]--;
+                if(indegree[next] == 0){
+                    que.add(next);
+                }
             }
         }
     }
-
 }

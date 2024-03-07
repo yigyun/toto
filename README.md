@@ -1,40 +1,40 @@
 # Toto Market
-> 공부 후 게시판을 조금 활용하기 위한 경매 관련 사이트
 
 
- 게시판 만들기에 대한 공부를 하고나서, 지금까지 공부했던 정보들도 적용해보고 사용하기 위해 시작한 개인 프로젝트입니다.
+## 🖥️ 프로젝트 소개
+ CRUD 게시판 만들기에 대한 공부를 하고나서, 지금까지 공부했던 정보들도 적용해보고 사용하기 위해 시작한 개인 프로젝트입니다.
  평소에 이베이를 자주 사용하는데 이런 사이트 한 번 해볼까 싶어서 시작하게 되었습니다.
- 
- 
- 
 
-## 개요
+<br>
 
-* 프로젝트 이름: Toto Market
-* 프로젝트 기간: 2023.11 - 2024.01
-* 개발 환경: Spring Boot 2.7, Java 11, Jquery
-* 도구: Intellij, Chrom, H2
+## 개발 기간
+- 23.11 - 24.02
 
-## 설명
+### ⚙️ 개발 환경
+- Language : Java 11
+- Framework : Spring Boot 2.x (with Spring Security, Spring Data JPA, Spring WebSocket)
+- Query Language : QueryDSL
+- Database : MySQL (Production), H2 (Test)
+- ORM : JPA
+- Authentication : OAuth2
+- Image Processing : Thumbnailator
+- API Documentation : Swagger
+- Build Tool : Gradle
+- IDE : IntelliJ IDEA
+- Version Control : Git, GitHub
+- Containerization : Docker
+- View : thymeleaf, 
 
-* 로그인 및 회원가입
-  * 로그인
-    로그인은 Spring Security 기반해서 기본 Form Login 방식과 Oauth2.0 기반(네이버, 구글)을 제공했다.
-    
-    [Detail](https://github.com/yigyun/toto/blob/master/login)
-    
-* 게시판
-  * CRUD
-  * 즐겨찾기
-  * 실시간
-  * 파일처리(이미지)
-  * 인증 및 인가 
-* 경매
-  * 입찰 
-
+## 📌 주요 기능
+#### Member [(상세정보)](./info/member.md)
+-
+#### Auction [(상세정보)](./info/auction.md)
+-
 
 
 ## 내역
 
 * 0.0.1
     * 기본 기능 완성(입찰, 게시판, 즐겨찾기, 로그인, 회원가입)
+
+
